@@ -67,18 +67,16 @@ $(document).on('click', '#gogo', function () {
                 cardHtml += `<div class="card-single" data-id="${e.id}">${e.name}</div>`;
             });
 
-            playerE.html(cardHtml);
-            playerE.prepend(`<button id="sortCards">Sap xep</button>`);
-            playerE.append(`<button id="playCards">Danh!</button>`);
+            playerE.find('.card-list').html(cardHtml);
+            playerE.find('.action-list').html(`<button id="sortCards">Sap xep</button> <button id="playCards">Danh!</button>`)
 
             for(let i = 0; i < 13; i++){
                 invisibleCardHtml += `<div class="card-single card-invisible"></div>`
             }
             let order = data.info.order;
-            let leftIdentity = order + 1 > 3 ? order + 1 - 4 : order + 1;
+            let rightIdentity = order + 1 > 3 ? order + 1 - 4 : order + 1;
             let topIdentity = order + 2 > 3 ? order + 2 - 4 : order + 2;
-            let rightIdentity = order + 3 > 3 ? order + 3 - 4 : order + 3;
-            console.log(rightIdentity);
+            let leftIdentity = order + 3 > 3 ? order + 3 - 4 : order + 3;
 
             $('.player-container:not(.bottom)').html(invisibleCardHtml);
 
@@ -89,19 +87,10 @@ $(document).on('click', '#gogo', function () {
         }
     });
 
-    socket.on('card-sorted', data => {
-        let cardHtml = ``;
-        if(data.info){
-            data.info.cards.map((e,i,a) =>  {
-                cardHtml += `<div class="card-single">${e.name}</div>`;
-            });
-            playerE.html(cardHtml);
-        }
-    });
 
 
     socket.on('your-turn', data => {
-        playerE.append(`<button id="pass">Bo Luot!</button>`);
+        playerE.find('.pass-container').html(`<button id="pass">Bo Luot!</button>`);
     });
 
     socket.on('turn-passed-as-pass', data => {
@@ -115,17 +104,42 @@ $(document).on('click', '#gogo', function () {
         alert('You can not pass your turn now!');
     });
     socket.on("your-first-turn-in-first-round", data => {
-        alert('You are the first player playing in this game!');
+        console.log('You are the first player playing in this game!');
     });
     socket.on("you-need-to-play-smallest-card", data => {
         alert('You need to play combo include smallest card!');
     });
 
+    socket.on("invalid-combo", data => {
+        alert('Your combo is not valid or not bigger than their combo!');
+    });
+
+    socket.on("remaining-cards", data => {
+        let cardHtml = ``;
+        if(data.info){
+            data.info.cards.map((e,i,a) =>  {
+                cardHtml += `<div class="card-single" data-id="${e.id}">${e.name}</div>`;
+            });
+            playerE.find('.card-list').html(cardHtml);
+        }
+    });
+
+    socket.on('card-sorted', data => {
+        let cardHtml = ``;
+        if(data.info){
+            data.info.cards.map((e,i,a) =>  {
+                cardHtml += `<div class="card-single" data-id="${e.id}">${e.name}</div>`;
+            });
+            playerE.find('.card-list').html(cardHtml);
+        }
+    });
+
+
     socket.on('turn-passed-as-play', cardsData => {
         $('#pass').remove();
         let cardsPlayed = ``;
         cardsData.map(e => {
-            cardsPlayed += `<div class="card-single">${e}</div>`;
+            cardsPlayed += `<div class="card-single"  data-id="${e}">${e}</div>`;
         });
         $('.table').html(cardsPlayed);
     })

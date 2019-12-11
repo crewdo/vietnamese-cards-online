@@ -1,6 +1,5 @@
 class Round {
     constructor() {
-        this.playersInRound = [];
         this.lastCombo = [];
         this.currentPlayerTurn = null;
         this.firstTurnInRound = false;
@@ -9,7 +8,6 @@ class Round {
     }
 
     reset(){
-        this.playersInRound = [];
         this.lastCombo = [];
         this.currentPlayerTurn = null;
         this.firstTurnInRound = false;

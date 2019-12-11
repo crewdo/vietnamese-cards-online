@@ -34,8 +34,11 @@
     margin: 0 auto;
     display: flex;
 }
+.bottom .card-list{
+    display: flex;
+}
 
-.top .card-single, .bottom .card-single{
+.top .card-single, .bottom .card-list .card-single{
     margin-right: -30px;
 }
 
@@ -55,4 +58,8 @@
 
 .selected-card{
     margin-top: -20px;
+}
+
+.table{
+    display: flex;
 }

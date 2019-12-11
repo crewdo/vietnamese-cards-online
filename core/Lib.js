@@ -20,6 +20,14 @@ class Lib {
         if (i === -1) return undefined;
         return arrayPlayerObject[(i + 1) % arrayPlayerObject.length];
     }
+
+    static checkOwnCards(player, cardsData){
+        let cardFilter =  player.cards.filter(card => {
+            return cardsData.indexOf(card.id) !== -1;
+        });
+        return cardsData.length === cardFilter.length
+    }
+
 }
 
 module.exports = Lib;

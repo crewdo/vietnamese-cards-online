@@ -3,7 +3,9 @@ class Player {
         this.userId = userId;
         this.cards = [];
         this.order = order;
-        this.isHosted = isHosted
+        this.isHosted = isHosted;
+        this.inRound = true;
+        this.won = false;
     }
 
     play(cards){
