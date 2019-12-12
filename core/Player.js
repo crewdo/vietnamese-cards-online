@@ -5,7 +5,6 @@ class Player {
         this.order = order;
         this.isHosted = isHosted;
         this.inRound = true;
-        this.won = false;
     }
 
     play(cards){

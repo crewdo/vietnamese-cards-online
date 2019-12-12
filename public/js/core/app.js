@@ -93,6 +93,10 @@ $(document).on('click', '#gogo', function () {
         playerE.find('.pass-container').html(`<button id="pass">Bo Luot!</button>`);
     });
 
+    socket.on('you-win', data => {
+       alert('You win!!!')
+    });
+
     socket.on('turn-passed-as-pass', data => {
         $('#pass').remove();
     });

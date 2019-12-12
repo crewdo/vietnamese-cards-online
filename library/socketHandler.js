@@ -6,7 +6,7 @@ const round = require("../core/Round");
 const comboChecker = require("../core/ComboChecker");
 
 class SocketHandler {
-    constructor(socketMain){
+    constructor(socketMain) {
         this.socket = null;
         this.socketMain = socketMain;
 
@@ -19,211 +19,228 @@ class SocketHandler {
 
     }
 
-    _bindSocketEvent(){
-        let _this = this;
+    _bindSocketEvent() {
+        let self = this;
         this.socketMain.on("connection", function (socket) {
-            _this.emitRoomMembers();
+            self.emitRoomMembers();
             socket.on('disconnect', () => {
-                _this.socket = socket;
-                _this.players = _this.players.filter(e => {
+                self.socket = socket;
+                self.players = self.players.filter(e => {
                     return e.userId !== socket.id;
                 });
-                if(_this.players.length > 0){
-                    _this.players[0].isHosted = 1;
-                    _this.emitStartBtn( _this.players[0].userId);
+                if (self.players.length > 0) {
+                    self.players[0].isHosted = 1;
+                    self.emitStartBtn(self.players[0].userId);
+                } else {
+                    self.game.state = 0;
                 }
-                else{
-                    _this.game.state = 0;
-                }
-                _this.emitRoomMembers();
+                self.emitRoomMembers();
                 socket.disconnect();
             });
-            socket.on("ready", (message) =>{
-                _this.socket = socket;
-                _this.handleReadyRequest(message)
+            socket.on("ready", (message) => {
+                self.socket = socket;
+                self.handleReadyRequest(message)
             });
 
-            socket.on("start-game", (message) =>{
+            socket.on("start-game", (message) => {
                 console.log(message);
-                _this.startGame();
+                self.startGame();
             });
 
-            socket.on("force-end-game", (message) =>{
+            socket.on("force-end-game", (message) => {
                 console.log(message);
-                _this.game.state = 0;
+                self.game.state = 0;
             });
 
-            socket.on("force-end-hack", (message) =>{
-                _this.game.state = 0;
-                _this.players = [];
+            socket.on("force-end-hack", (message) => {
+                self.game.state = 0;
+                self.players = [];
             });
 
-            socket.on("sort-cards", (message) =>{
-                let playerObj = _this.getCurrentUser(socket.id);
-                if(playerObj.cards.length > 0){
+            socket.on("sort-cards", (message) => {
+                let playerObj = self.getCurrentUser(socket.id);
+                if (playerObj.cards.length > 0) {
                     playerObj.cards = lib.sortCards(playerObj.cards);
                 }
 
-                _this.socketMain.to(`${socket.id}`).emit("card-sorted", {info: playerObj});
+                self.socketMain.to(`${socket.id}`).emit("card-sorted", {info: playerObj});
             });
 
-            socket.on("play", (cardsData) =>{
+            socket.on("play", (cardsData) => {
                 console.log(cardsData);
-                let playerObj = _this.getCurrentUser(socket.id);
-                if(playerObj === _this.round.currentPlayerTurn && _this.players.length > 1){
-                    if(_this.round.firstTurnInFirstRound && _this.game.lastWinner === null){
+                let playerObj = self.getCurrentUser(socket.id);
+                if (playerObj === self.round.turnAssignee && self.players.length > 1 && playerObj.cards.length > 0) {
+                    if (self.round.firstTurnInFirstRound && self.game.lastWinner === null) {
                         let smallestCardChecking = cardsData.some(e => {
-                            return e === _this.round.smallestCardId;
+                            return e === self.round.smallestCardId;
                         });
 
-                        if(smallestCardChecking){
-                            _this.play(socket.id, cardsData);
+                        if (smallestCardChecking) {
+                            self.play(socket.id, cardsData, playerObj);
+                            self.round.firstTurnInFirstRound = false;
+                        } else {
+                            self.socketMain.to(`${socket.id}`).emit("you-need-to-play-smallest-card");
                         }
-                        else {
-                            _this.socketMain.to(`${socket.id}`).emit("you-need-to-play-smallest-card");
-                        }
-                        _this.round.firstTurnInFirstRound = false;
-
+                    } else {
+                        self.play(socket.id, cardsData, playerObj);
                     }
-                    else {
-                        _this.play(socket.id, cardsData);
-                    }
+                } else {
+                    self.socketMain.to(`${socket.id}`).emit("not-your-turn");
                 }
-                else {
-                    _this.socketMain.to(`${socket.id}`).emit("not-your-turn");
-                }
-
 
             });
 
             socket.on('pass', message => {
                 console.log('Passing!');
-                let playerObj = _this.getCurrentUser(socket.id);
-                if(playerObj === _this.round.currentPlayerTurn && _this.players.length > 1){
-                    if(!_this.round.firstTurnInRound){
-                    _this.round.currentPlayerTurn.inRound = false;
-                    _this.next();
-                    _this.socketMain.to(`${socket.id}`).emit("turn-passed-as-pass");
-                    }
-                    else{
-                        _this.socketMain.to(`${socket.id}`).emit("your-turn-can-not-pass");
-                    }
-                }
-                else {
-                    _this.socketMain.to(`${socket.id}`).emit("not-your-turn");
+                let playerObj = self.getCurrentUser(socket.id);
+                if (playerObj === self.round.turnAssignee && self.players.length > 1) {
+                    self.passed(socket.id, playerObj);
+                } else {
+                    self.socketMain.to(`${socket.id}`).emit("not-your-turn");
                 }
             });
 
         });
     }
 
-    play(socketId, cardsData){
-        let currentPlayer = this.getCurrentUser(socketId);
-        if(this.comboChecker.checkingCombo(cardsData,  this.round.lastCombo)){
+    play(socketId, cardsData, currentPlayer) {
+        if (currentPlayer === this.round.keyKeeper) {
+            this.round.lastCombo = null;
+            this.players = this.players.map(e => {
+                e.inRound = true;
+                return e;
+            });
+        }
+
+        if (this.comboChecker.checkingCombo(cardsData, this.round.lastCombo)) {
             currentPlayer.cards = currentPlayer.cards.filter(e => {
                 return cardsData.indexOf(e.id) === -1;
             });
+
             this.round.lastCombo = cardsData;
             this.socketMain.emit("turn-passed-as-play", cardsData);
-
-            this.next();
-
             this.socketMain.to(`${socketId}`).emit("remaining-cards", {info: currentPlayer});
-        }
-        else {
+
+            currentPlayer.inRound = true;
+            this.round.keyKeeper = currentPlayer;
+
+            if (currentPlayer.cards.length === 0) {
+                if (this.game.playersWin.length === 0) {
+                    this.game.lastWinner = currentPlayer;
+                }
+                this.game.playersWin.push(currentPlayer);
+                this.socketMain.to(`${currentPlayer.userId}`).emit("you-win");
+                this.round.prioritier = lib.findNextPlayer(this.players, currentPlayer);
+                this.next();
+                this.players = this.players.filter(e => {
+                    return e.id !== socketId;
+                });
+
+            } else {
+                this.next();
+            }
+
+        } else {
             this.socketMain.to(`${socketId}`).emit("invalid-combo");
         }
     }
 
-    next(){
-            let next =  lib.findNextPlayer(this.players, this.round.currentPlayerTurn);
-            while(!next.inRound || next.won){
-                next = lib.findNextPlayer(this.players, next);
-            }
-            if(this.round.currentPlayerTurn === next){
-                this.round.currentPlayerTurn = next;
-                this.round.firstTurnInRound = true;
-                this.players = this.players.map(e => {
-                    e.inRound = true;
-                    return e;
-                });
+    next() {
+        //find next inRound player
+        let nextPlayer = this.findNextInRound();
+        this.round.turnAssignee = nextPlayer;
+        this.socketMain.to(`${nextPlayer.userId}`).emit("your-turn");
 
-                if(next.cards.length === 0){
-                    if(this.game.playersWin.length === 0){
-                        this.game.lastWinner = next;
-                    }
-                    this.game.playersWin.push(next);
-                    next.won = true;
-
-                    this.socketMain.to(`${next.userId}`).emit("you-win");
-                    this.next();
-
-                }
-                else{
-                    this.socketMain.to(`${this.round.currentPlayerTurn.userId}`).emit("your-turn");
-                    this.round.lastCombo = null;
-                }
-
-
-            }
-            else{
-                this.round.currentPlayerTurn = next;
-                this.socketMain.to(`${next.userId}`).emit("your-turn");
-                this.round.firstTurnInRound = false;
-            }
     }
 
-    getCurrentUser(socketId){
+    findNextInRound() {
+        let next = lib.findNextPlayer(this.players, this.round.turnAssignee);
+        while (!next.inRound) {
+            next = lib.findNextPlayer(this.players, next);
+        }
+        return next;
+    }
+
+    passed(playerObj, socketId) {
+
+        if (playerObj === this.round.keyKeeper) {
+            this.socketMain.to(`${socketId}`).emit("your-turn-can-not-pass");
+        } else {
+
+            let nextPlayer = null;
+            playerObj.inRound = false;
+
+            let inRoundChecking = this.players.some(e => {
+                return e.inRound;
+            });
+
+            if (inRoundChecking) {
+                nextPlayer = this.findNextInRound();
+            } else {
+                nextPlayer = this.round.prioritier;
+                this.round.keyKeeper = nextPlayer;
+            }
+
+            this.socketMain.to(`${socketId}`).emit("turn-passed-as-pass");
+            this.round.turnAssignee = nextPlayer;
+            this.socketMain.to(`${nextPlayer.userId}`).emit("your-turn");
+
+        }
+
+
+    }
+
+
+    getCurrentUser(socketId) {
         return this.players.filter(player => {
             return player.userId === socketId;
         })[0];
     }
 
-    handleReadyRequest(message){
+    handleReadyRequest(message) {
         console.log(message);
         let accepted = this.players;
-        let isJoined = accepted.some( e =>  {
+        let isJoined = accepted.some(e => {
             return e.userId === this.socket.id
         });
-        if(!isJoined && this.game.state === 0){
+        if (!isJoined && this.game.state === 0) {
             if (accepted.length === 0) {
-                this.players.push(new player({userId: this.socket.id, order: 0,  isHosted : 1}));
+                this.players.push(new player({userId: this.socket.id, order: 0, isHosted: 1}));
                 this.emitStartBtn(this.socket.id);
-            }
-            else if(accepted.length < 4){
-                this.players.push(new player({userId: this.socket.id, order : accepted.length, isHosted : 0}));
+            } else if (accepted.length < 4) {
+                this.players.push(new player({userId: this.socket.id, order: accepted.length, isHosted: 0}));
             }
             this.emitRoomMembers();
         }
 
     };
 
-    emitStartBtn(socketId){
-        if(this.game.state === 0) {
+    emitStartBtn(socketId) {
+        if (this.game.state === 0) {
             this.socketMain.to(`${socketId}`).emit("start-btn-bind", {status: 'success'});
         }
     };
 
-    emitRoomMembers(){
-        if(this.game.state === 0){
-            this.socketMain.emit("room-members", { users: this.players });
+    emitRoomMembers() {
+        if (this.game.state === 0) {
+            this.socketMain.emit("room-members", {users: this.players});
         }
     };
 
 
-    startGame(){
+    startGame() {
         let memCount = this.players.length;
-        if(memCount > 1 && memCount < 5 && this.game.state === 0){
+        if (memCount > 1 && memCount < 5 && this.game.state === 0) {
             let divideFour = [[], [], [], []];
             this.cardBox = lib.shuffleArray(this.cardBox);
             this.cardBox.map(function (e, i, a) {
                 divideFour[i % 4].push(e);
             });
 
-            let _this = this;
+            let self = this;
             this.players.map(function (e, i, a) {
-               e.cards = divideFour[i];
-                _this.socketMain.to(`${e.userId}`).emit("card-result", { info: e});
+                e.cards = divideFour[i];
+                self.socketMain.to(`${e.userId}`).emit("card-result", {info: e});
             });
 
             this.game.state = 1;
@@ -232,37 +249,36 @@ class SocketHandler {
 
     }
 
-    checkAndInitFirstRound(){
+    checkAndInitFirstRound() {
         this.round.reset();
         this.round.playersInRound = this.players;
-        if(this.game.lastWinner){
-            this.round.currentPlayerTurn = this.game.lastWinner;
-        }
-        else{
+        if (this.game.lastWinner) {
+            this.round.turnAssignee = this.game.lastWinner;
+        } else {
             let cardId = 0; //3 Shade
-            while (this.round.currentPlayerTurn === null){
+            while (this.round.turnAssignee === null) {
                 var filterThreeShade = this.players.filter(e => {
                     return e.cards.some(e => {
                         return e.id === cardId;
                     })
                 });
-                if(filterThreeShade.length > 0){
+                if (filterThreeShade.length > 0) {
                     this.round.smallestCardId = cardId;
-                    this.round.currentPlayerTurn = filterThreeShade[0];
+                    this.round.turnAssignee = filterThreeShade[0];
                 }
                 cardId++;
             }
         }
         this.round.firstTurnInFirstRound = true;
-        this.socketMain.to(`${this.round.currentPlayerTurn.userId}`).emit("your-first-turn-in-first-round");
+        this.socketMain.to(`${this.round.turnAssignee.userId}`).emit("your-first-turn-in-first-round");
     }
 
-    initCardBox(){
-        [3,4,5,6,7,8,9,10,'J','Q','K','A',2].map((e, i, a) => {
-            this.cardBox.push(new singleCard({id: i * 4, name: e + 'S', worth: i+3, suit: 0}));
-            this.cardBox.push(new singleCard({id: i * 4 + 1,name: e + 'C', worth: i+3, suit: 1}));
-            this.cardBox.push(new singleCard({id: i * 4 + 2,name: e + 'D', worth: i+3, suit: 2}));
-            this.cardBox.push(new singleCard({id: i * 4 + 3,name: e + 'H', worth: i+3, suit: 3}));
+    initCardBox() {
+        [3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A', 2].map((e, i, a) => {
+            this.cardBox.push(new singleCard({id: i * 4, name: e + 'S', worth: i + 3, suit: 0}));
+            this.cardBox.push(new singleCard({id: i * 4 + 1, name: e + 'C', worth: i + 3, suit: 1}));
+            this.cardBox.push(new singleCard({id: i * 4 + 2, name: e + 'D', worth: i + 3, suit: 2}));
+            this.cardBox.push(new singleCard({id: i * 4 + 3, name: e + 'H', worth: i + 3, suit: 3}));
         });
 
         this.comboChecker = new comboChecker(this.cardBox);
