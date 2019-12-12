@@ -68,23 +68,15 @@ class SocketHandler {
                 let currentPlayer = self.getCurrentUser(socket.id);
                 if (currentPlayer === self.round.turnAssignee && self.players.length > 1 && currentPlayer.cards.length > 0) {
 
-                    let ownCards = currentPlayer.cards.filter(e => {
-                        return e.id.indexOf(cardsData) !== -1;
-                    });
-
-                    if(ownCards.length !== cardsData.length){
-                        this.socketMain.to(`${socket.id}`).emit("not-own-cards");
-                        return false;
-                    }
-
                     if (self.round.firstTurnInFirstRound && self.game.lastWinner === null) {
                         let smallestCardChecking = cardsData.some(e => {
                             return e === self.round.smallestCardId;
                         });
 
                         if (smallestCardChecking) {
-                            self.play(socket.id, cardsData, currentPlayer);
-                            self.round.firstTurnInFirstRound = false;
+                            if(self.play(socket.id, cardsData, currentPlayer)){
+                                self.round.firstTurnInFirstRound = false;
+                            }
                         } else {
                             self.socketMain.to(`${socket.id}`).emit("you-need-to-play-smallest-card");
                         }
@@ -119,7 +111,7 @@ class SocketHandler {
             });
         }
 
-        if (this.comboChecker.checkingCombo(cardsData, this.round.lastCombo)) {
+        if (this.comboChecker.checkingCombo(currentPlayer, cardsData, this.round.lastCombo)) {
             currentPlayer.cards = currentPlayer.cards.filter(e => {
                 return cardsData.indexOf(e.id) === -1;
             });
@@ -146,9 +138,11 @@ class SocketHandler {
             } else {
                 this.next();
             }
+            return true;
 
         } else {
             this.socketMain.to(`${socketId}`).emit("invalid-combo");
+            return false;
         }
     }
 
