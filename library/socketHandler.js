@@ -50,11 +50,8 @@ class SocketHandler {
             socket.on("force-end-game", (message) => {
                 console.log(message);
                 self.game.state = 0;
-            });
-
-            socket.on("force-end-hack", (message) => {
-                self.game.state = 0;
-                self.players = [];
+                self.game.playersWin = [];
+                self.round.reset()
             });
 
             socket.on("sort-cards", (message) => {
@@ -76,8 +73,8 @@ class SocketHandler {
                     });
 
                     if(ownCards.length !== cardsData.length){
-                        this.socketMain.to(`${socketId}`).emit("not-own-cards");
-                        return;
+                        this.socketMain.to(`${socket.id}`).emit("not-own-cards");
+                        return false;
                     }
 
                     if (self.round.firstTurnInFirstRound && self.game.lastWinner === null) {

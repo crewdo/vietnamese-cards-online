@@ -154,11 +154,6 @@ $(document).on('click', '#gogo', function () {
     })
 })();
 
-function forceEndHack() {
-    socket.emit("force-end-hack", socket.id);
-
-}
-
 
 
 
