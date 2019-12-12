@@ -101,6 +101,11 @@ $(document).on('click', '#gogo', function () {
         $('#pass').remove();
     });
 
+    socket.on('not-own-cards', data => {
+        alert('Don\'t hack, I know that cards don\'t belong to you!');
+
+    });
+
     socket.on('not-your-turn', data => {
         alert('It\'s not your turn');
     });

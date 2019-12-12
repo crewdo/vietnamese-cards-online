@@ -58,31 +58,41 @@ class SocketHandler {
             });
 
             socket.on("sort-cards", (message) => {
-                let playerObj = self.getCurrentUser(socket.id);
-                if (playerObj.cards.length > 0) {
-                    playerObj.cards = lib.sortCards(playerObj.cards);
+                let currentPlayer = self.getCurrentUser(socket.id);
+                if (currentPlayer.cards.length > 0) {
+                    currentPlayer.cards = lib.sortCards(currentPlayer.cards);
                 }
 
-                self.socketMain.to(`${socket.id}`).emit("card-sorted", {info: playerObj});
+                self.socketMain.to(`${socket.id}`).emit("card-sorted", {info: currentPlayer});
             });
 
             socket.on("play", (cardsData) => {
                 console.log(cardsData);
-                let playerObj = self.getCurrentUser(socket.id);
-                if (playerObj === self.round.turnAssignee && self.players.length > 1 && playerObj.cards.length > 0) {
+                let currentPlayer = self.getCurrentUser(socket.id);
+                if (currentPlayer === self.round.turnAssignee && self.players.length > 1 && currentPlayer.cards.length > 0) {
+
+                    let ownCards = currentPlayer.cards.filter(e => {
+                        return e.id.indexOf(cardsData) !== -1;
+                    });
+
+                    if(ownCards.length !== cardsData.length){
+                        this.socketMain.to(`${socketId}`).emit("not-own-cards");
+                        return;
+                    }
+
                     if (self.round.firstTurnInFirstRound && self.game.lastWinner === null) {
                         let smallestCardChecking = cardsData.some(e => {
                             return e === self.round.smallestCardId;
                         });
 
                         if (smallestCardChecking) {
-                            self.play(socket.id, cardsData, playerObj);
+                            self.play(socket.id, cardsData, currentPlayer);
                             self.round.firstTurnInFirstRound = false;
                         } else {
                             self.socketMain.to(`${socket.id}`).emit("you-need-to-play-smallest-card");
                         }
                     } else {
-                        self.play(socket.id, cardsData, playerObj);
+                        self.play(socket.id, cardsData, currentPlayer);
                     }
                 } else {
                     self.socketMain.to(`${socket.id}`).emit("not-your-turn");
@@ -92,9 +102,9 @@ class SocketHandler {
 
             socket.on('pass', message => {
                 console.log('Passing!');
-                let playerObj = self.getCurrentUser(socket.id);
-                if (playerObj === self.round.turnAssignee && self.players.length > 1) {
-                    self.passed(socket.id, playerObj);
+                let currentPlayer = self.getCurrentUser(socket.id);
+                if (currentPlayer === self.round.turnAssignee && self.players.length > 1) {
+                    self.passed(currentPlayer, socket.id);
                 } else {
                     self.socketMain.to(`${socket.id}`).emit("not-your-turn");
                 }
@@ -133,7 +143,7 @@ class SocketHandler {
                 this.round.prioritier = lib.findNextPlayer(this.players, currentPlayer);
                 this.next();
                 this.players = this.players.filter(e => {
-                    return e.id !== socketId;
+                    return e.userId !== socketId;
                 });
 
             } else {
@@ -161,14 +171,14 @@ class SocketHandler {
         return next;
     }
 
-    passed(playerObj, socketId) {
+    passed(currentPlayer, socketId) {
 
-        if (playerObj === this.round.keyKeeper) {
+        if (currentPlayer === this.round.keyKeeper) {
             this.socketMain.to(`${socketId}`).emit("your-turn-can-not-pass");
         } else {
 
             let nextPlayer = null;
-            playerObj.inRound = false;
+            currentPlayer.inRound = false;
 
             let inRoundChecking = this.players.some(e => {
                 return e.inRound;
