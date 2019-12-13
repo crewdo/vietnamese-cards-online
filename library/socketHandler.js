@@ -64,10 +64,8 @@ class SocketHandler {
             });
 
             socket.on("play", (cardsData) => {
-                console.log(cardsData);
                 let currentPlayer = self.getCurrentUser(socket.id);
                 if (currentPlayer === self.round.turnAssignee && self.players.length > 1 && currentPlayer.cards.length > 0) {
-
                     if (self.round.firstTurnInFirstRound && self.game.lastWinner === null) {
                         let smallestCardChecking = cardsData.some(e => {
                             return e === self.round.smallestCardId;
@@ -104,7 +102,7 @@ class SocketHandler {
 
     play(socketId, cardsData, currentPlayer) {
         if (currentPlayer === this.round.keyKeeper) {
-            this.round.lastCombo = null;
+            this.round.lastCombo = [];
             this.players = this.players.map(e => {
                 e.inRound = true;
                 return e;
@@ -139,7 +137,6 @@ class SocketHandler {
                 this.next();
             }
             return true;
-
         } else {
             this.socketMain.to(`${socketId}`).emit("invalid-combo");
             return false;
@@ -282,7 +279,7 @@ class SocketHandler {
             this.cardBox.push(new singleCard({id: i * 4 + 3, name: e + 'H', worth: i + 3, suit: 3}));
         });
 
-        this.comboChecker = new comboChecker(this.cardBox);
+        this.comboChecker = new comboChecker();
     }
 }
 

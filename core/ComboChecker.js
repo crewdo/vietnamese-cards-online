@@ -1,18 +1,25 @@
+const lib = require("../core/Lib.js");
+const singleCard = require("../core/Card");
+
 class ComboChecker {
     constructor(cardBox) {
-        this.cardBox = cardBox;
+        this.theFullBox = [];
+        [3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A', 2].map((e, i, a) => {
+             this.theFullBox.push(new singleCard({id: i * 4, name: e + 'S', worth: i + 3, suit: 0}));
+             this.theFullBox.push(new singleCard({id: i * 4 + 1, name: e + 'C', worth: i + 3, suit: 1}));
+             this.theFullBox.push(new singleCard({id: i * 4 + 2, name: e + 'D', worth: i + 3, suit: 2}));
+             this.theFullBox.push(new singleCard({id: i * 4 + 3, name: e + 'H', worth: i + 3, suit: 3}));
+        });
     }
 
     checkingCombo(currentPlayer, cardsData, lastCombo) {
-        console.log(this.cardBox);
-        console.log(cardsData);
-        console.log(lastCombo);
-
         cardsData.sort((a, b) => {
             return a - b
         });
 
-        let cardsDataBinding = currentPlayer.cards.filter(e => {
+        let currentPlayerCardSorted = lib.sortCards(currentPlayer.cards);
+
+        let cardsDataBinding = currentPlayerCardSorted.filter(e => {
             return cardsData.indexOf(e.id) !== -1;
         });
 
@@ -20,22 +27,21 @@ class ComboChecker {
             return false;
         }
         let comboType = this.validationChecking(cardsData, cardsDataBinding);
-        console.log(comboType);
         if (!comboType) {
             return false;
         }
-        if (comboType && !lastCombo) {
+        if (comboType && !lastCombo.length) {
             return true;
         }
-        if (comboType && lastCombo) {
+        if (comboType && lastCombo.length > 0) {
             lastCombo.sort((a, b) => {
                 return a - b
             });
-            let lastComboDataBinding = this.cardBox.filter(e => {
-                return cardsData.indexOf(e.id) !== -1;
+            let lastComboDataBinding = this.theFullBox.filter(e => {
+                return lastCombo.indexOf(e.id) !== -1;
             });
-            let lastComboType = this.validationChecking(lastCombo, lastComboDataBinding);
 
+            let lastComboType = this.validationChecking(lastCombo, lastComboDataBinding);
             if (lastComboType) {
                 return this.compare(comboType, cardsData, cardsDataBinding, lastComboType, lastCombo, lastComboDataBinding);
             }
@@ -45,7 +51,7 @@ class ComboChecker {
 
     }
 
-    static compare(comboType, cardsData, cardsDataBinding, lastComboType, lastCombo, lastComboDataBinding) {
+     compare(comboType, cardsData, cardsDataBinding, lastComboType, lastCombo, lastComboDataBinding) {
         if((this.twoChecking(cardsData) === this.twoChecking(lastCombo))
             && comboType === lastComboType && cardsDataBinding.length === lastComboDataBinding.length
             && this.getComboStrength(cardsDataBinding) > this.getComboStrength(lastComboDataBinding) )
@@ -60,11 +66,11 @@ class ComboChecker {
         return lastComboType === 'twice_recursive' && lastCombo.length === 6 && comboType === 'number_same_4';
     }
 
-    static getComboStrength(cardsBinding){
+    getComboStrength(cardsBinding){
         return (cardsBinding[cardsBinding.length - 1].worth * 10) + cardsBinding[cardsBinding.length - 1].suit;
     }
 
-    static validationChecking(cardsArrayData, cardsObjectBinding) {
+    validationChecking(cardsArrayData, cardsObjectBinding) {
         if (cardsArrayData.length === 1) return 'single';
         if (cardsArrayData.length === 2 || cardsArrayData.length === 3 || cardsArrayData.length === 4) {
             let theSame = this.isNumberSame(cardsArrayData.length, cardsObjectBinding);
@@ -81,11 +87,11 @@ class ComboChecker {
         return false;
     }
 
-    static twoChecking(cardsArrayData) {
-        return cardsArrayData.indexOf(48) || cardsArrayData.indexOf(49) || cardsArrayData.indexOf(50) || cardsArrayData.indexOf(51);
+     twoChecking(cardsArrayData) {
+        return cardsArrayData.indexOf(48) !== -1 || cardsArrayData.indexOf(49) !== -1 || cardsArrayData.indexOf(50) !== -1 || cardsArrayData.indexOf(51) !== -1;
     }
 
-    static isTwiceRecursive(cardsArrayData, e) {
+     isTwiceRecursive(cardsArrayData, e) {
         if (this.twoChecking(cardsArrayData)) return false;
         if (e.length % 2 === 0 && e.length >= 6) {
             for (let i = 0; i < e.length; i = i + 2) {
@@ -98,7 +104,7 @@ class ComboChecker {
         return false;
     }
 
-    static isRecursive(cardsArrayData, e) {
+     isRecursive(cardsArrayData, e) {
         if (this.twoChecking(cardsArrayData)) return false;
         if (e.length > 2 && e.length <= 12) {
             for (let i = 0; i < e.length - 1; i++) {
@@ -111,7 +117,7 @@ class ComboChecker {
         return false;
     };
 
-    static isNumberSame(number, e) {
+     isNumberSame(number, e) {
         if (e.length === number) {
             let keyCheck = e[0].worth;
             if (!e.some(ele => {
@@ -122,7 +128,7 @@ class ComboChecker {
         return false;
     };
 
-    static isSixTwice(e) {
+     isSixTwice(e) {
         if (e.length === 13) {
             let count = 0;
             let result = 0;
