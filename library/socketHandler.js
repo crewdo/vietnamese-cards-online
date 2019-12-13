@@ -88,7 +88,6 @@ class SocketHandler {
             });
 
             socket.on('pass', message => {
-                console.log('Passing!');
                 let currentPlayer = self.getCurrentUser(socket.id);
                 if (currentPlayer === self.round.turnAssignee && self.players.length > 1) {
                     self.passed(currentPlayer, socket.id);
