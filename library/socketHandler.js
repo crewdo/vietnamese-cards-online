@@ -44,7 +44,10 @@ class SocketHandler {
 
             socket.on("start-game", (message) => {
                 console.log(message);
-                self.startGame();
+                let host = self.getCurrentUser(socket.id);
+                if(host.isHosted && self.players >= 2){
+                    self.startGame();
+                }
             });
 
             socket.on("force-end-game", (message) => {
@@ -147,6 +150,7 @@ class SocketHandler {
         let nextPlayer = this.findNextInRound();
         this.round.turnAssignee = nextPlayer;
         this.socketMain.to(`${nextPlayer.userId}`).emit("your-turn");
+        this.socketMain.emit("next-player-turn", nextPlayer.order);
 
     }
 
@@ -181,6 +185,8 @@ class SocketHandler {
             this.socketMain.to(`${socketId}`).emit("turn-passed-as-pass");
             this.round.turnAssignee = nextPlayer;
             this.socketMain.to(`${nextPlayer.userId}`).emit("your-turn");
+            this.socketMain.emit("next-player-turn", nextPlayer.order);
+
 
         }
 
@@ -195,7 +201,6 @@ class SocketHandler {
     }
 
     handleReadyRequest(message) {
-        console.log(message);
         let accepted = this.players;
         let isJoined = accepted.some(e => {
             return e.userId === this.socket.id
@@ -204,8 +209,15 @@ class SocketHandler {
             if (accepted.length === 0) {
                 this.players.push(new player({userId: this.socket.id, order: 0, isHosted: 1}));
                 this.emitStartBtn(this.socket.id);
+                if (this.game.state === 0) {
+                    this.socketMain.to(`${this.socket.id}`).emit("you-come-in", {newOrder: 0, comeInPlayer: this.players[0]});
+                }
+
             } else if (accepted.length < 4) {
                 this.players.push(new player({userId: this.socket.id, order: accepted.length, isHosted: 0}));
+                if (this.game.state === 0) {
+                    this.socketMain.to(`${this.socket.id}`).emit("you-come-in", {newOrder: accepted.length, comeInPlayer: this.players[this.players.length - 1]});
+                }
             }
             this.emitRoomMembers();
         }

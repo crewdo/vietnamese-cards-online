@@ -1,52 +1,132 @@
-<!DOCTYPE  html>
 <html>
 <head>
-    <title>Crew Playing Cards</title>
-    <link  href="/css/style.css"  type="text/css"  rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-<div class="action-playing"></div>
-<div  class="main-playing">
-<button id="startGame">Ready</button>
-    <h5>Current Room members</h5>
-    <div id="current-room-members">
-    </div>
-
-    <hr>
-    <div id="main">
-        <div class="column-left">
-            <div class="player-container left">
-            </div>
+<div class="container">
+    <div class="table-container">
+        <div class="ready-container">
+            <button id="ready" class="ready">Vào Phòng?</button>
         </div>
 
-        <div class="column-between">
-            <div class="player-container top">
-            </div>
-            <div class="table">
-
-            </div>
-
-            <div class="player-container bottom">
-                <div class="card-list"></div>
-                <div class="action-list"></div>
-                <div class="pass-container"></div>
-            </div>
+        <div class="start-game hidden">
+            <button id="gogo" class="ready start">Bắt đầu</button>
         </div>
 
-        <div class="column-right">
-            <div class="player-container right">
+        <div class="players-wrapper">
+            <div class="single-player top">
+                <div class="player-info">
+                    <strong>Xuan Phuc</strong>
+                    <img src="image/node-ava.png">
+                </div>
+                <div class="back-image-wrapper">
+                    <img src="image/backof.jpg" class="back-image">
+                </div>
+            </div>
+
+
+            <div class="single-player left">
+                <div class="player-info">
+                    <strong>Erik</strong>
+                    <img src="image/node-ava.png">
+                </div>
+                <div class="back-image-wrapper">
+                    <img src="image/backof.jpg" class="back-image">
+                </div>
+            </div>
+
+
+            <div class="single-player right">
+                <div class="player-info">
+                    <strong>Nick Vo</strong>
+                    <img src="image/node-ava.png">
+                </div>
+                <div class="back-image-wrapper">
+                    <img src="image/backof.jpg" class="back-image">
+                </div>
+            </div>
+
+            <div class="single-player bottom">
+            </div>
+
+            <div class="self-container">
+                <div class="action-container">
+                    <button class="pass" id="pass">Bỏ lượt</button>
+                    <button class="hit" id="playCards">Đánh</button>
+                </div>
+                <div class="cards-handle-container">
+                    <div class="cards">
+                        <div class="single-card">
+                            <img src="./image/2S.png">
+                        </div>
+
+                        <div class="single-card picking">
+                            <img src="./image/2S.png" class="">
+                        </div>
+
+
+                        <div class="single-card">
+                            <img src="./image/2S.png">
+                        </div>
+
+                        <div class="single-card">
+                            <img src="./image/2S.png">
+                        </div>
+
+                        <div class="single-card">
+                            <img src="./image/2S.png">
+                        </div>
+
+                        <div class="single-card">
+                            <img src="./image/2S.png">
+                        </div>
+
+                        <div class="single-card">
+                            <img src="./image/2S.png">
+                        </div>
+
+                        <div class="single-card">
+                            <img src="./image/2S.png">
+                        </div>
+
+                        <div class="single-card">
+                            <img src="./image/2S.png">
+                        </div>
+
+                        <div class="single-card">
+                            <img src="./image/2S.png">
+                        </div>
+
+                        <div class="single-card">
+                            <img src="./image/2S.png">
+                        </div>
+
+                        <div class="single-card">
+                            <img src="./image/2S.png">
+                        </div>
+
+                        <div class="single-card">
+                            <img src="./image/2S.png">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrange-container">
+                <button class="arrange" id="sortCards">Xếp</button>
             </div>
         </div>
-
-
-
-
-
     </div>
 </div>
-<script  src="/js/lib/socket-io.js"></script>
-<script  src="/js/lib/jquery-3.4.1.js"></script>
-<script  src="/js/core/app.js"></script>
+
+<script  src="./js/lib/socket-io.js"></script>
+<script  src="./js/lib/jquery-3.4.1.js"></script>
+<script  src="./js/core/app.js"></script>
 
 </body>
 </html>

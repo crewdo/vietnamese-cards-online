@@ -1,0 +1,48 @@
+<!DOCTYPE  html>
+<html>
+<head>
+    <title>Crew Playing Cards</title>
+    <link  href="/css/style.css"  type="text/css"  rel="stylesheet"/>
+</head>
+<body>
+<div class="action-playing"></div>
+<div  class="main-playing">
+<button id="startGame">Ready</button>
+    <h5>Current Room members</h5>
+    <div id="current-room-members">
+    </div>
+
+    <hr>
+    <div id="main">
+        <div class="column-left">
+            <div class="player-container left">
+            </div>
+        </div>
+
+        <div class="column-between">
+            <div class="player-container top">
+            </div>
+            <div class="table">
+
+            </div>
+
+            <div class="player-container bottom">
+                <div class="card-list"></div>
+                <div class="action-list"></div>
+                <div class="pass-container"></div>
+            </div>
+        </div>
+
+        <div class="column-right">
+            <div class="player-container right">
+            </div>
+        </div>
+
+    </div>
+</div>
+<script  src="/js/lib/socket-io.js"></script>
+<script  src="/js/lib/jquery-3.4.1.js"></script>
+<script  src="/js/core/app.js"></script>
+
+</body>
+</html>
