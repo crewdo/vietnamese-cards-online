@@ -218,3 +218,15 @@ html, body{
 .hidden{
     visibility: hidden;
 }
+
+.played-area-container{
+    width: 500px;
+    height: 300px;
+    position: absolute;
+    left: 0;
+    background: red;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+}

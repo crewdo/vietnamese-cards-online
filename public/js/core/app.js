@@ -94,7 +94,7 @@ $(document).ready(function () {
             if(data.info){
                 data.info.cards.map((e,i,a) =>  {
                     cardHtml += `<div class="single-card" data-id="${e.id}">
-                                <img src="./image/${e.name}.png">
+                                <img src="./image/${e.id}.png">
                         </div>`;
                 });
                 $('.cards').html(cardHtml);
@@ -108,7 +108,7 @@ $(document).ready(function () {
             if(data.info){
                 data.info.cards.map((e,i,a) =>  {
                     cardHtml += `<div class="single-card" data-id="${e.id}">
-                                <img src="./image/${e.name}.png">
+                                <img src="./image/${e.id}.png">
                                  </div>`;
                 });
                 $('.cards').html(cardHtml);
@@ -129,12 +129,11 @@ $(document).ready(function () {
 
         socket.on('turn-passed-as-play', cardsData => {
             $('.action-container').addClass('hidden');
-
-            // let cardsPlayed = ``;
-            // cardsData.map(e => {
-            //     cardsPlayed += `<div class="card-single"  data-id="${e}">${e}</div>`;
-            // });
-            // $('.table').html(cardsPlayed);
+            let cardsPlayed = ``;
+            cardsData.map(id => {
+                cardsPlayed += `<img class="card-played" src="./image/${id}.png">`;
+            });
+            $('.played-area-container').append(cardsPlayed);
         });
 
         socket.on("remaining-cards", data => {
@@ -142,7 +141,7 @@ $(document).ready(function () {
             if(data.info){
                 data.info.cards.map((e,i,a) =>  {
                     cardHtml += `<div class="single-card" data-id="${e.id}">
-                                <img src="./image/${e.name}.png">
+                                <img src="./image/${e.id}.png">
                                  </div>`;
                 });
                 $('.cards').html(cardHtml);
