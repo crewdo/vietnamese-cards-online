@@ -47,7 +47,6 @@ $(document).ready(function () {
         });
 
         socket.on('you-come-in', data => {
-            console.log(data.newOrder)
             var selfPlayer = $('.bottom');
             selfPlayer.data('order', data.newOrder);
             selfPlayer.addClass('order-' + data.newOrder);
@@ -59,8 +58,8 @@ $(document).ready(function () {
         });
 
         socket.on("room-members", data => {
-
             let order = $('.bottom').data('order');
+            console.log(order);
             var leftPlayer = $('.left');
             var rightPlayer = $('.right');
             var topPlayer = $('.top');
@@ -179,6 +178,10 @@ $(document).ready(function () {
 
         socket.on("invalid-combo", data => {
             alert('Your combo is not valid or not bigger than their combo!');
+        });
+
+        socket.on("the-game-is-busy", data => {
+            alert('The game is busy now, just waiting...');
         });
 
 

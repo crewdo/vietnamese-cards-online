@@ -7,7 +7,6 @@ const comboChecker = require("../core/ComboChecker");
 
 class SocketHandler {
     constructor(socketMain) {
-        this.socket = null;
         this.socketMain = socketMain;
 
         this.players = [];
@@ -23,7 +22,6 @@ class SocketHandler {
         let self = this;
         this.socketMain.on("connection", function (socket) {
             socket.on('disconnect', () => {
-                self.socket = socket;
                 self.players = self.players.filter(e => {
                     return e.userId !== socket.id;
                 });
@@ -37,12 +35,10 @@ class SocketHandler {
                 socket.disconnect();
             });
             socket.on("ready", (message) => {
-                self.socket = socket;
-                self.handleReadyRequest(message)
+                self.handleReadyRequest(message, socket.id)
             });
 
             socket.on("start-game", (message) => {
-                console.log(message);
                 let host = self.getCurrentUser(socket.id);
                 if(host.isHosted && self.players.length >= 2){
                     self.startGame();
@@ -50,7 +46,6 @@ class SocketHandler {
             });
 
             socket.on("force-end-game", (message) => {
-                console.log(message);
                 self.game.state = 0;
                 self.game.playersWin = [];
                 self.round.reset()
@@ -188,10 +183,7 @@ class SocketHandler {
 
 
         }
-
-
     }
-
 
     getCurrentUser(socketId) {
         return this.players.filter(player => {
@@ -199,26 +191,29 @@ class SocketHandler {
         })[0];
     }
 
-    handleReadyRequest(message) {
+    handleReadyRequest(message, socketId) {
         let accepted = this.players;
         let isJoined = accepted.some(e => {
-            return e.userId === this.socket.id
+            return e.userId === socketId
         });
         if (!isJoined && this.game.state === 0) {
             if (accepted.length === 0) {
-                this.players.push(new player({userId: this.socket.id, order: 0, isHosted: 1}));
-                this.emitStartBtn(this.socket.id);
+                this.players.push(new player({userId: socketId, order: 0, isHosted: 1}));
+                this.emitStartBtn(socketId);
                 if (this.game.state === 0) {
-                    this.socketMain.to(`${this.socket.id}`).emit("you-come-in", {newOrder: 0, comeInPlayer: this.players[0]});
+                    this.socketMain.to(`${socketId}`).emit("you-come-in", {newOrder: 0, comeInPlayer: this.players[0]});
                 }
 
             } else if (accepted.length < 4) {
-                this.players.push(new player({userId: this.socket.id, order: accepted.length, isHosted: 0}));
+                this.players.push(new player({userId: socketId, order: accepted.length, isHosted: 0}));
                 if (this.game.state === 0) {
-                    this.socketMain.to(`${this.socket.id}`).emit("you-come-in", {newOrder: this.players.length - 1, comeInPlayer: this.players[this.players.length - 1]});
+                    this.socketMain.to(`${socketId}`).emit("you-come-in", {newOrder: this.players.length - 1, comeInPlayer: this.players[this.players.length - 1]});
                 }
             }
             this.emitRoomMembers();
+        }
+        else{
+            this.socketMain.to(`${socketId}`).emit("the-game-is-busy");
         }
 
     };
