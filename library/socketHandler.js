@@ -22,7 +22,6 @@ class SocketHandler {
     _bindSocketEvent() {
         let self = this;
         this.socketMain.on("connection", function (socket) {
-            self.emitRoomMembers();
             socket.on('disconnect', () => {
                 self.socket = socket;
                 self.players = self.players.filter(e => {
@@ -45,7 +44,7 @@ class SocketHandler {
             socket.on("start-game", (message) => {
                 console.log(message);
                 let host = self.getCurrentUser(socket.id);
-                if(host.isHosted && self.players >= 2){
+                if(host.isHosted && self.players.length >= 2){
                     self.startGame();
                 }
             });
@@ -92,7 +91,7 @@ class SocketHandler {
 
             socket.on('pass', message => {
                 let currentPlayer = self.getCurrentUser(socket.id);
-                if (currentPlayer === self.round.turnAssignee && self.players.length > 1) {
+                if (currentPlayer === self.round.turnAssignee && self.players.length > 1 && !self.round.firstTurnInFirstRound) {
                     self.passed(currentPlayer, socket.id);
                 } else {
                     self.socketMain.to(`${socket.id}`).emit("not-your-turn");
@@ -216,7 +215,7 @@ class SocketHandler {
             } else if (accepted.length < 4) {
                 this.players.push(new player({userId: this.socket.id, order: accepted.length, isHosted: 0}));
                 if (this.game.state === 0) {
-                    this.socketMain.to(`${this.socket.id}`).emit("you-come-in", {newOrder: accepted.length, comeInPlayer: this.players[this.players.length - 1]});
+                    this.socketMain.to(`${this.socket.id}`).emit("you-come-in", {newOrder: this.players.length - 1, comeInPlayer: this.players[this.players.length - 1]});
                 }
             }
             this.emitRoomMembers();
