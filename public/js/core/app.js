@@ -59,7 +59,6 @@ $(document).ready(function () {
 
         socket.on("room-members", data => {
             let order = $('.bottom').data('order');
-            console.log(order);
             var leftPlayer = $('.left');
             var rightPlayer = $('.right');
             var topPlayer = $('.top');
