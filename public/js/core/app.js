@@ -8,10 +8,8 @@ $(document).ready(function () {
 
     $(document).on('click', '#gogo', function () {
         socket.emit("start-game", 'Start Game!');
+
         })
-        // .on('click', '#force-end', function () {
-        //     socket.emit("force-end-game", 'Force End Game!');
-        // })
         .on('click', '#sortCards', function () {
             socket.emit('sort-cards');
         })
@@ -33,11 +31,10 @@ $(document).ready(function () {
             }
         });
 
-    // window.onbeforeunload = functionxs ()
+    // window.onbeforeunload = function()
     // {
-    //     return true;
+    //     return "";
     // };
-
 
     (function() {
         socket.on("start-btn-bind", data => {
@@ -96,8 +93,8 @@ $(document).ready(function () {
                         </div>`;
                 });
                 $('.cards').html(cardHtml);
-
                 $('#sortCards').removeClass('hidden');
+                $('.start-game').addClass('hidden');
             }
         });
 
@@ -156,12 +153,10 @@ $(document).ready(function () {
         });
 
         socket.on('game-end', data => {
-            console.log(data);
             $('.cards').html('');
             $('.played-area-container').html('');
             $('.action-container').addClass('hidden');
         });
-
 
         socket.on('not-own-cards', data => {
             alert('Don\'t hack, I know that cards don\'t belong to you!');
@@ -176,7 +171,6 @@ $(document).ready(function () {
             alert('You can not pass your turn now!');
         });
 
-
         socket.on("you-need-to-play-smallest-card", data => {
             alert('You need to play combo include smallest card!');
         });
@@ -189,14 +183,9 @@ $(document).ready(function () {
             alert('The game is busy now, just waiting...');
         });
 
-
     })();
 
 });
-
-
-
-
 
 //
 // (function() {

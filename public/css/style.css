@@ -36,8 +36,10 @@ html, body{
     border-radius: 10px;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 3px;
 
+}
+.single-player div{
+    margin: 5px;
 }
 .player-info{
     width: 90px;
@@ -179,13 +181,13 @@ html, body{
     position: absolute;
     width: 100%;
     height: 100vh;
-    background: #000000de;
+    /*background: #000000de;*/
     z-index: 1;
 }
 .ready{
     margin: auto;
     position: absolute;
-    left: 0;
+    left: 35px;
     top: 0;
     right: 0;
     bottom: 0;
