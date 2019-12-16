@@ -234,3 +234,7 @@ html, body{
     margin-left: -30px;
     margin-top: 5px;
 }
+
+.turn-active{
+    border: 3px solid yellow;
+}
