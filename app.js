@@ -7,7 +7,7 @@ const playRouter = require("./routes/play");
 const socketHandler = require("./library/socketHandler");
 
 const io = require("socket.io");
-const port = 3000;
+const port = 80;
 const socket = io(server);
 
 let _socketHandler = new socketHandler(socket);

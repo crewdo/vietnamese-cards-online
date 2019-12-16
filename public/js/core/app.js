@@ -148,8 +148,8 @@ $(document).ready(function () {
             $('.order-'+ order).addClass('turn-active');
         });
 
-        socket.on('you-win', data => {
-            alert('You win!!!')
+        socket.on('you-win', player => {
+            alert(player.userId + ' win!')
         });
 
         socket.on('game-end', data => {

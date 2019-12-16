@@ -136,7 +136,8 @@ class SocketHandler {
                     this.game.lastWinner = currentPlayer;
                 }
                 this.game.playersWin.push(currentPlayer);
-                this.socketMain.to(`${currentPlayer.userId}`).emit("you-win");
+                this.socketMain.emit("you-win", currentPlayer);
+
                 this.round.prioritier = lib.findNextPlayer(this.players, currentPlayer);
                 this.next();
                 this.players = this.players.filter(e => {
@@ -217,6 +218,9 @@ class SocketHandler {
         this.game.state = 0;
         this.game.playersWin = [];
         this.round.reset();
+        this.players = this.players.map(e => {
+            return e.inRound = true;
+        });
         this.socketMain.emit("game-end", this.game.playersWin);
         let hostedUserId = this.players.filter(e => e.isHosted === 1)[0];
         if(typeof  hostedUserId !== "undefined"){
