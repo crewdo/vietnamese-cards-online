@@ -40,9 +40,12 @@ class SocketHandler {
 
             socket.on("start-game", (message) => {
                 let host = self.getCurrentUser(socket.id);
-                if(host.isHosted && self.players.length >= 2){
-                    self.startGame();
+                if(typeof host !== "undefined"){
+                    if(host.isHosted && self.players.length >= 2 ){
+                        self.startGame();
+                    }
                 }
+
             });
 
             socket.on("force-end-game", (message) => {
@@ -129,6 +132,13 @@ class SocketHandler {
                     return e.userId !== socketId;
                 });
 
+                if(this.players.length === 1){
+                    this.players[0].inRound = true;
+                    this.players[0].cards = [];
+                    this.game.playersWin.push(this.players[0]);
+                    this.restart();
+                }
+
             } else {
                 this.next();
             }
@@ -189,6 +199,16 @@ class SocketHandler {
         return this.players.filter(player => {
             return player.userId === socketId;
         })[0];
+    }
+
+    restart(){
+        this.players = this.game.playersWin;
+        this.game.state = 0;
+        this.game.playersWin = [];
+        this.round.reset();
+        this.socketMain.emit("game-end", this.game.playersWin);
+        let hostedUserId = this.players.filter(e => e.isHosted === 1)[0].id;
+        this.socketMain.to(`${hostedUserId}`).emit("start-btn-bind", {status: 'success'});
     }
 
     handleReadyRequest(message, socketId) {

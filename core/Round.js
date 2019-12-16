@@ -18,8 +18,6 @@ class Round {
         this.smallestCardId = null;
 
 
-
-
     }
 }
 

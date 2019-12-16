@@ -155,6 +155,13 @@ $(document).ready(function () {
             alert('You win!!!')
         });
 
+        socket.on('game-end', data => {
+            console.log(data);
+            $('.cards').html('');
+            $('.played-area-container').html('');
+            $('.action-container').addClass('hidden');
+        });
+
 
         socket.on('not-own-cards', data => {
             alert('Don\'t hack, I know that cards don\'t belong to you!');
@@ -168,7 +175,6 @@ $(document).ready(function () {
         socket.on("your-turn-can-not-pass", data => {
             alert('You can not pass your turn now!');
         });
-
 
 
         socket.on("you-need-to-play-smallest-card", data => {
