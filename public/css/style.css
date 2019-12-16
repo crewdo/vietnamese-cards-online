@@ -32,7 +32,7 @@ html, body{
 .single-player{
     width: 180px;
     display: flex;
-    background: #00000030;
+    background: #00000045;
     border-radius: 10px;
     align-items: center;
     justify-content: space-between;
@@ -261,4 +261,8 @@ html, body{
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
     -moz-box-sizing: border-box;    /* Firefox, other Gecko */
     box-sizing: border-box;         /* Opera/IE 8+ */
+}
+
+.opacity-03{
+    opacity: 0.3;
 }

@@ -1,6 +1,12 @@
 var socket = io();
 
 $(document).ready(function () {
+
+    function playAudio(url) {
+        var a = new Audio(url);
+        a.play();
+    }
+
     let lastUsername = localStorage.getItem('username');
     if(lastUsername !== null){
         $('#username').val(lastUsername);
@@ -33,6 +39,7 @@ $(document).ready(function () {
         })
         .on('click', '.cards .single-card', function () {
             $(this).toggleClass('picking');
+                playAudio('./sound/picking.wav');
         })
         .on('click', '#pass', function () {
             socket.emit('pass');
@@ -125,6 +132,7 @@ $(document).ready(function () {
                                  </div>`;
                 });
                 $('.cards').html(cardHtml);
+                playAudio('./sound/picking.wav');
             }
         });
 
@@ -136,9 +144,16 @@ $(document).ready(function () {
             $('.action-container').removeClass('hidden');
         });
 
-        socket.on('turn-passed-as-pass', data => {
+        socket.on('turn-passed-as-pass', orderData => {
             $('.action-container').addClass('hidden');
         });
+
+        socket.on('turn-passed-as-pass-global', orderData => {
+            $('.order-' + orderData).addClass('opacity-03');
+        });
+       socket.on('new-round', data => {
+           $('.single-player').removeClass('opacity-03');
+       });
 
         socket.on('turn-passed-as-play', cardsData => {
             $('.action-container').addClass('hidden');
@@ -147,6 +162,8 @@ $(document).ready(function () {
                 cardsPlayed += `<img class="card-played" src="./image/${id}.png">`;
             });
             $('.played-area-container').append(cardsPlayed);
+            playAudio('./sound/hit.wav');
+
         });
 
         socket.on("remaining-cards", data => {
@@ -174,11 +191,16 @@ $(document).ready(function () {
             $('.cards').html('');
             $('.played-area-container').html('');
             $('.action-container').addClass('hidden');
+            $('.single-player').removeClass('opacity-03');
         });
 
         socket.on('not-own-cards', data => {
             alert('Don\'t hack, I know that cards don\'t belong to you!');
 
+        });
+
+        socket.on('kill-two', data => {
+            playAudio('./sound/killtwo.mp3');
         });
 
         socket.on('not-your-turn', data => {

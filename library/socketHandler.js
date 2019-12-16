@@ -116,6 +116,7 @@ class SocketHandler {
                 e.inRound = true;
                 return e;
             });
+            this.socketMain.emit("new-round");
         }
 
         if (this.comboChecker.checkingCombo(currentPlayer, cardsData, this.round.lastCombo)) {
@@ -123,6 +124,9 @@ class SocketHandler {
                 return cardsData.indexOf(e.id) === -1;
             });
 
+            if(this.comboChecker.twoChecking(this.round.lastCombo) || this.round.lastCombo.length > 5){
+                this.socketMain.emit("kill-two");
+            }
             this.round.lastCombo = cardsData;
             this.socketMain.emit("turn-passed-as-play", cardsData);
             this.socketMain.to(`${socketId}`).emit("remaining-cards", {info: currentPlayer});
@@ -182,7 +186,6 @@ class SocketHandler {
         if (currentPlayer === this.round.keyKeeper) {
             this.socketMain.to(`${socketId}`).emit("your-turn-can-not-pass");
         } else {
-
             let nextPlayer = null;
             currentPlayer.inRound = false;
 
@@ -198,6 +201,7 @@ class SocketHandler {
             }
 
             this.socketMain.to(`${socketId}`).emit("turn-passed-as-pass");
+            this.socketMain.emit("turn-passed-as-pass-global", currentPlayer.order);
             this.round.turnAssignee = nextPlayer;
             this.socketMain.to(`${nextPlayer.userId}`).emit("your-turn");
             this.socketMain.emit("next-player-turn", nextPlayer.order);
