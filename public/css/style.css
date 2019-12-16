@@ -48,7 +48,7 @@ html, body{
 .player-info strong{
     color: white;
     display: block;
-    font-size: 10px;
+    font-size: 14px;
 }
 .player-info img{
     border-radius: 50%;
@@ -187,7 +187,7 @@ html, body{
 .ready{
     margin: auto;
     position: absolute;
-    left: 35px;
+    left: 0;
     top: 0;
     right: 0;
     bottom: 0;
@@ -203,7 +203,26 @@ html, body{
     cursor: pointer;
 }
 
+#username{
+    text-align: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 160px;
+    right: 0;
+    height: 40px;
+    margin: auto;
+    width: 200px;
+    font-size: 18px;
+    outline: none;
+    font-weight: 100;
+    border-radius: 7px;
+    box-shadow: none;
+    border: none;
+}
+
 .ready.start{
+    left: 35px;
     position: relative;
     margin: unset;
     background: #00b7ff;

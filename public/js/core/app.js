@@ -1,9 +1,27 @@
 var socket = io();
 
 $(document).ready(function () {
+    let lastUsername = localStorage.getItem('username');
+    if(lastUsername !== null){
+        $('#username').val(lastUsername);
+    }
     $('#ready').click(function () {
-        socket.emit("ready", socket.id);
-        $(this).parent().remove();
+        let userName = $('#username').val();
+        if(userName !== ""){
+            socket.emit("ready", userName);
+            $(this).parent().remove();
+            localStorage.setItem('username', userName);
+        }
+        else {
+            alert('You need type your name');
+        }
+
+    });
+
+    $('#username').keypress(function (e) {
+       if(e.keyCode === 13){
+           $('#ready').click();
+       }
     });
 
     $(document).on('click', '#gogo', function () {
@@ -48,7 +66,7 @@ $(document).ready(function () {
             selfPlayer.data('order', data.newOrder);
             selfPlayer.addClass('order-' + data.newOrder);
             selfPlayer.html(`<div class="player-info">
-                    <strong>${data.comeInPlayer.userId}</strong>
+                    <strong>${data.comeInPlayer.userName}</strong>
                     <img src="image/node-ava.png"> </div>
                      <div class="cards-container">
                     </div>`);
@@ -74,7 +92,7 @@ $(document).ready(function () {
 
             data.users.map(function (e) {
                 $('.order-' + e.order).html(`<div class="player-info">
-                     <strong>${e.userId}</strong>
+                     <strong>${e.userName}</strong>
                     <img src="image/node-ava.png">
                     </div>
                     <div class="back-image-wrapper">
@@ -149,7 +167,7 @@ $(document).ready(function () {
         });
 
         socket.on('you-win', player => {
-            alert(player.userId + ' win!')
+            alert(player.userName + ' win!')
         });
 
         socket.on('game-end', data => {

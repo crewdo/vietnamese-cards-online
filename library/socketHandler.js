@@ -45,8 +45,8 @@ class SocketHandler {
                 self.emitRoomMembers();
                 socket.disconnect();
             });
-            socket.on("ready", (message) => {
-                self.handleReadyRequest(message, socket.id)
+            socket.on("ready", (userName) => {
+                self.handleReadyRequest(userName, socket.id)
             });
 
             socket.on("start-game", (message) => {
@@ -229,21 +229,24 @@ class SocketHandler {
 
     }
 
-    handleReadyRequest(message, socketId) {
+    handleReadyRequest(userName, socketId) {
         let accepted = this.players;
         let isJoined = accepted.some(e => {
             return e.userId === socketId
         });
         if (!isJoined && this.game.state === 0) {
+            if(userName === ""){
+                userName = "Player " + accepted.length;
+            }
             if (accepted.length === 0) {
-                this.players.push(new player({userId: socketId, order: 0, isHosted: 1}));
+                this.players.push(new player({userId: socketId, order: 0, isHosted: 1, userName: userName}));
                 this.emitStartBtn(socketId);
                 if (this.game.state === 0) {
                     this.socketMain.to(`${socketId}`).emit("you-come-in", {newOrder: 0, comeInPlayer: this.players[0]});
                 }
 
             } else if (accepted.length < 4) {
-                this.players.push(new player({userId: socketId, order: accepted.length, isHosted: 0}));
+                this.players.push(new player({userId: socketId, order: accepted.length, isHosted: 0, userName: userName}));
                 if (this.game.state === 0) {
                     this.socketMain.to(`${socketId}`).emit("you-come-in", {newOrder: this.players.length - 1, comeInPlayer: this.players[this.players.length - 1]});
                 }
