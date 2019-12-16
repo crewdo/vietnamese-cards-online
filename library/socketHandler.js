@@ -22,14 +22,25 @@ class SocketHandler {
         let self = this;
         this.socketMain.on("connection", function (socket) {
             socket.on('disconnect', () => {
+
+                let oldPlayersCount = self.players.length;
                 self.players = self.players.filter(e => {
                     return e.userId !== socket.id;
                 });
+                let newPlayerCount = self.players.length;
+
+                if(newPlayerCount < oldPlayersCount){
+                    self.game.lastWinner = null;
+                }
+
                 if (self.players.length > 0) {
                     self.players[0].isHosted = 1;
-                    self.emitStartBtn(self.players[0].userId);
+                    if(self.game.state === 0){
+                        self.emitStartBtn(self.players[0].userId);
+                    }
                 } else {
-                    self.game.state = 0;
+                    self.game.playersWin = [];
+                    self.restart();
                 }
                 self.emitRoomMembers();
                 socket.disconnect();
@@ -207,8 +218,10 @@ class SocketHandler {
         this.game.playersWin = [];
         this.round.reset();
         this.socketMain.emit("game-end", this.game.playersWin);
-        let hostedUserId = this.players.filter(e => e.isHosted === 1)[0].id;
-        this.socketMain.to(`${hostedUserId}`).emit("start-btn-bind", {status: 'success'});
+        let hostedUserId = this.players.filter(e => e.isHosted === 1)[0];
+        if(typeof  hostedUserId !== "undefined"){
+            this.socketMain.to(`${hostedUserId.userId}`).emit("start-btn-bind", {status: 'success'});
+        }
     }
 
     handleReadyRequest(message, socketId) {
