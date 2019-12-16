@@ -84,7 +84,6 @@ class SocketHandler {
 
                         if (smallestCardChecking) {
                             if(self.play(socket.id, cardsData, currentPlayer)){
-                                self.round.firstTurnInFirstRound = false;
                             }
                         } else {
                             self.socketMain.to(`${socket.id}`).emit("you-need-to-play-smallest-card");
@@ -130,6 +129,7 @@ class SocketHandler {
 
             currentPlayer.inRound = true;
             this.round.keyKeeper = currentPlayer;
+            this.round.firstTurnInFirstRound = false;
 
             if (currentPlayer.cards.length === 0) {
                 if (this.game.playersWin.length === 0) {
@@ -145,7 +145,6 @@ class SocketHandler {
                 });
 
                 if(this.players.length === 1){
-                    this.players[0].inRound = true;
                     this.players[0].cards = [];
                     this.game.playersWin.push(this.players[0]);
                     this.restart();
@@ -219,13 +218,15 @@ class SocketHandler {
         this.game.playersWin = [];
         this.round.reset();
         this.players = this.players.map(e => {
-            return e.inRound = true;
+            e.inRound = true;
+            return e;
         });
         this.socketMain.emit("game-end", this.game.playersWin);
-        let hostedUserId = this.players.filter(e => e.isHosted === 1)[0];
-        if(typeof  hostedUserId !== "undefined"){
-            this.socketMain.to(`${hostedUserId.userId}`).emit("start-btn-bind", {status: 'success'});
+        let hostedUserId = this.players.filter(e => e.isHosted === 1);
+        if(hostedUserId.length > 0){
+            this.socketMain.to(`${hostedUserId[0].userId}`).emit("start-btn-bind", {status: 'success'});
         }
+
     }
 
     handleReadyRequest(message, socketId) {
