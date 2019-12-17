@@ -56,10 +56,10 @@ $(document).ready(function () {
             }
         });
 
-    // window.onbeforeunload = function()
-    // {
-    //     return "";
-    // };
+    window.onbeforeunload = function()
+    {
+        return "";
+    };
 
     (function() {
         socket.on("start-btn-bind", data => {
