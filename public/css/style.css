@@ -251,9 +251,13 @@ html, body{
     margin: auto;
 }
 .played-area-container img{
-    width: 60px;
+    width: 65px;
+    margin-top: 3px;
     margin-left: -30px;
-    margin-top: 5px;
+}
+
+.last-combo-container{
+    display: inline-block;
 }
 
 .turn-active{
@@ -265,4 +269,22 @@ html, body{
 
 .opacity-03{
     opacity: 0.3;
+}
+
+.last-combo-container{
+    padding: 5px;
+}
+
+.last-combo-highlight{
+    border: 2px solid #64edce;
+    border-radius: 5px;
+}
+
+.last-combo-container img:first-child {
+    margin-left: 0;
+}
+
+.ajs-message{
+    color: white;
+    font-size: 14px;
 }

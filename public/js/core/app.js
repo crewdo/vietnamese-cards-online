@@ -19,7 +19,7 @@ $(document).ready(function () {
             localStorage.setItem('username', userName);
         }
         else {
-            alert('You need type your name');
+            alertify.notify('Nhập tên trước đã!', 'error', 4, function(){});
         }
 
     });
@@ -158,10 +158,12 @@ $(document).ready(function () {
         socket.on('turn-passed-as-play', cardsData => {
             $('.action-container').addClass('hidden');
             let cardsPlayed = ``;
+
             cardsData.map(id => {
                 cardsPlayed += `<img class="card-played" src="./image/${id}.png">`;
             });
-            $('.played-area-container').append(cardsPlayed);
+            $('.last-combo-container').removeClass('last-combo-highlight');
+            $('.played-area-container').append(`<div class="last-combo-container last-combo-highlight">${cardsPlayed}`);
             playAudio('./sound/hit.wav');
 
         });
@@ -184,7 +186,9 @@ $(document).ready(function () {
         });
 
         socket.on('you-win', player => {
-            alert(player.userName + ' win!')
+            alertify.notify(player.userName + 'đã hết bài!', 'error', 4, function(){});
+
+            alert()
         });
 
         socket.on('game-end', data => {
@@ -195,7 +199,7 @@ $(document).ready(function () {
         });
 
         socket.on('not-own-cards', data => {
-            alert('Don\'t hack, I know that cards don\'t belong to you!');
+            alertify.notify('Không hack được đâu', 'error', 4, function(){});
 
         });
 
@@ -204,23 +208,23 @@ $(document).ready(function () {
         });
 
         socket.on('not-your-turn', data => {
-            alert('It\'s not your turn');
+            alertify.notify('Chưa đến lượt, bình tĩnh...', 'error', 4, function(){});
         });
 
         socket.on("your-turn-can-not-pass", data => {
-            alert('You can not pass your turn now!');
+            alertify.notify('Đang cầm vòng, sao bỏ được?', 'error', 4, function(){});
         });
 
         socket.on("you-need-to-play-smallest-card", data => {
-            alert('You need to play combo include smallest card!');
+            alertify.notify('Ván đầu, đánh con nhỏ nhất giùm', 'error', 4, function(){});
         });
 
         socket.on("invalid-combo", data => {
-            alert('Your combo is not valid or not bigger than their combo!');
+            alertify.notify('Không được phép đánh như vậy...', 'error', 4, function(){});
         });
 
         socket.on("the-game-is-busy", data => {
-            alert('The game is busy now, just waiting...');
+            alert('Đợi đi, mọi người đang trong game rồi.');
         });
 
     })();
