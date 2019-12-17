@@ -225,6 +225,11 @@ class SocketHandler {
             e.inRound = true;
             return e;
         });
+
+        this.players =  this.players.sort((a, b) =>{
+            return a.order - b.order;
+        });
+
         this.socketMain.emit("game-end", this.game.playersWin);
         let hostedUserId = this.players.filter(e => e.isHosted === 1);
         if(hostedUserId.length > 0){
