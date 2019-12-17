@@ -241,6 +241,8 @@ html, body{
 }
 
 .played-area-container{
+    padding-top: 80px;
+    box-sizing: border-box;
     width: 500px;
     height: 360px;
     position: absolute;
@@ -273,10 +275,11 @@ html, body{
 
 .last-combo-container{
     padding: 5px;
+    margin-top: -80px;
 }
 
 .last-combo-highlight{
-    border: 2px solid #64edce;
+    border: 2px solid #000000;
     border-radius: 5px;
 }
 
