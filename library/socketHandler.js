@@ -124,7 +124,7 @@ class SocketHandler {
                 return cardsData.indexOf(e.id) === -1;
             });
 
-            if(this.comboChecker.twoChecking(this.round.lastCombo) || this.round.lastCombo.length > 5){
+            if((this.comboChecker.twoChecking(this.round.lastCombo) && !this.comboChecker.twoChecking(cardsData))  || this.round.lastCombo.length > 5){
                 this.socketMain.emit("kill-two");
             }
             this.round.lastCombo = cardsData;

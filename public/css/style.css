@@ -279,7 +279,7 @@ html, body{
 }
 
 .last-combo-highlight{
-    border: 2px solid #000000;
+    background: #47ff0069;
     border-radius: 5px;
 }
 

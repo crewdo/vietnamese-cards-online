@@ -162,9 +162,16 @@ $(document).ready(function () {
             cardsData.map(id => {
                 cardsPlayed += `<img class="card-played" src="./image/${id}.png">`;
             });
+
             $('.last-combo-container').removeClass('last-combo-highlight');
             $('.played-area-container').append(`<div class="last-combo-container last-combo-highlight">${cardsPlayed}`);
-            playAudio('./sound/hit.wav');
+
+            if(cardsData.indexOf(48) !== -1 || cardsData.indexOf(49) !== -1 || cardsData.indexOf(50) !== -1 || cardsData.indexOf(51) !== -1){
+                playAudio('./sound/hit-two.mp3');
+            }
+            else{
+                playAudio('./sound/hit.wav');
+            }
 
         });
 
