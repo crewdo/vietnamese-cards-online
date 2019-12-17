@@ -1,0 +1,39 @@
+image: "ruby:2.3"
+# Cache gems in between builds
+cache:
+  paths:
+    - vendor/ruby
+
+stages:
+  - test
+  - build
+  - deploy
+  - development
+
+test:
+  stage: test
+  script: echo "Running tests"
+  only:
+    - master
+
+build:
+  stage: build
+  script: echo "Building the app"
+  only:
+    - master
+
+
+deploy_staging:
+  stage: deploy
+  script:
+    - apt-get update -qy
+    - apt-get install -y ruby-dev
+    - apt-get install -y rubygems
+    - gem install dpl
+    - COMMIT=$(git log -1 --pretty=%B)
+    - dpl --provider=heroku --app=company-poker --api-key=$HEROKU_STAGING_API_KEY
+  environment:
+    name: staging
+  only:
+    - master
+
