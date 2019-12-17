@@ -196,11 +196,6 @@ $(document).ready(function () {
             $('.single-player').removeClass('opacity-03');
         });
 
-        socket.on('not-own-cards', data => {
-            alertify.notify('Không hack được đâu', 'error', 4, function(){});
-
-        });
-
         socket.on('kill-two', data => {
             playAudio('./sound/killtwo.mp3');
         });

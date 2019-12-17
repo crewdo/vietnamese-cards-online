@@ -23,9 +23,11 @@ class ComboChecker {
             return cardsData.indexOf(e.id) !== -1;
         });
 
+        //Check own cards
         if (cardsDataBinding.length !== cardsData.length) {
             return false;
         }
+
         let comboType = this.validationChecking(cardsData, cardsDataBinding);
         if (!comboType) {
             return false;
