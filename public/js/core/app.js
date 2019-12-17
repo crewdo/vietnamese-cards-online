@@ -187,8 +187,6 @@ $(document).ready(function () {
 
         socket.on('you-win', player => {
             alertify.notify(player.userName + 'đã hết bài!', 'error', 4, function(){});
-
-            alert()
         });
 
         socket.on('game-end', data => {
