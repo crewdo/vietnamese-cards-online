@@ -1,5 +1,5 @@
 class Player {
-    constructor({userId, order, isHosted, userName}){
+    constructor({userId, order, isHosted, userName, roomId}){
         this.userId = userId;
         this.cards = [];
         this.order = order;

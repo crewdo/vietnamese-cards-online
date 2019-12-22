@@ -1,63 +1,67 @@
 <html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Playing Cards Online Game</title>
-    <link rel="stylesheet" href="./css/style.css?ver=1.2">
-    <link rel="stylesheet" href="./css/lib/alertify.min.css">
-    <link rel="icon" href="./image/favicon.png" sizes="16x16 32x32" type="image/png">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Playing Cards Online Game</title>
+        <link rel="stylesheet" href="./css/style.css?ver=1.2">
+        <link rel="stylesheet" href="./css/lib/alertify.min.css">
+        <link rel="icon" href="./image/favicon.png" sizes="16x16 32x32" type="image/png">
 
-</head>
-<body>
-<div class="container">
-    <div class="table-container">
+    </head>
+    <body>
+    <button id="createRoom">Create Room</button>
 
-        <div class="played-area-container">
+    <div class="room-list" style="">
 
-        </div>
+    </div>
+    <div class="ready-container">
+        <input name="username" id="username" maxlength="20" placeholder="Nhập tên">
+        <button id="ready" class="ready">Vào game</button>
+    </div>
+    <div class="container" style="display: none">
+        <div class="table-container">
+            <div class="played-area-container">
 
-        <div class="ready-container">
-            <input name="username" id="username" maxlength="20" placeholder="Nhập tên">
-            <button id="ready" class="ready">Sẵn sàng?</button>
-        </div>
-
-        <div class="start-game hidden">
-            <button id="gogo" class="ready start">Bắt đầu</button>
-        </div>
-
-        <div class="players-wrapper">
-            <div class="single-player top">
             </div>
-            <div class="single-player left">
+
+            <div class="start-game hidden">
+                <button id="gogo" class="ready start">Bắt đầu</button>
             </div>
-            <div class="single-player right">
-            </div>
-            <div class="single-player bottom">
-            </div>
-            <div class="self-container">
-                <div class="action-container hidden">
-                    <button class="pass" id="pass">Bỏ lượt</button>
-                    <button class="hit" id="playCards">Đánh</button>
+
+            <div class="players-wrapper">
+                <div class="single-player top">
                 </div>
-                <div class="cards-handle-container">
-                    <div class="cards">
+                <div class="single-player left">
+                </div>
+                <div class="single-player right">
+                </div>
+                <div class="single-player bottom">
+                </div>
+                <div class="self-container">
+                    <div class="action-container hidden">
+                        <button class="pass" id="pass">Bỏ lượt</button>
+                        <button class="hit" id="playCards">Đánh</button>
+                    </div>
+                    <div class="cards-handle-container">
+                        <div class="cards">
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="arrange-container">
-                <button class="arrange hidden" id="sortCards">Xếp</button>
+                <div class="arrange-container">
+                    <button class="arrange hidden" id="sortCards">Xếp</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script  src="./js/lib/socket-io.js"></script>
-<script  src="./js/lib/jquery-3.4.1.js"></script>
-<script  src="./js/lib/alertify.min.js"></script>
-<script  src="./js/core/app.js?ver=1.4"></script>
+    <script  src="./js/lib/socket-io.js"></script>
+    <script  src="./js/lib/jquery-3.4.1.js"></script>
+    <script  src="./js/lib/alertify.min.js"></script>
+    <script src="./js/core/select-room.js"></script>
+    </body>
+    </html>
 
-</body>
-</html>
+
