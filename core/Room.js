@@ -7,7 +7,6 @@ const comboChecker = require("../core/ComboChecker");
 
 class Room{
  constructor(socketGlobal, roomId){
-     console.log(socketGlobal);
      this.players = [];
      this.game = new game();
      this.cardBox = [];
@@ -119,9 +118,14 @@ class Room{
     }
 
     getCurrentUser(socketId) {
-        return this.players.filter(player => {
+        let currentPlayer = this.players.filter(player => {
             return player.userId === socketId;
         })[0];
+        if(typeof currentPlayer !== "undefined") {
+            return currentPlayer;
+        }
+        return false;
+
     }
 
     restart(){
@@ -147,7 +151,6 @@ class Room{
     }
 
     handleReadyRequest(userName, socketId) {
-     console.log(this.players);
         let accepted = this.players;
         let isJoined = accepted.some(e => {
             return e.userId === socketId
@@ -179,8 +182,6 @@ class Room{
 
     emitStartBtn(socketId) {
         if (this.game.state === 0) {
-            console.log(socketId);
-            console.log('start emit');
             this.socketMain.to(`${socketId}`).emit("start-btn-bind", {status: 'success'});
         }
     };

@@ -34,7 +34,7 @@ $(document).ready(function () {
 
     $(document)
         .on('click', '#createRoom', function () {
-            socket.emit("room-created", userNameGlobal, Math.random().toString(36).substring(2), function (roomId) {
+            socket.emit("room-created", userNameGlobal, function (roomId) {
                 roomIdGlobal = roomId;
                 $('.container').show();
 
@@ -44,7 +44,6 @@ $(document).ready(function () {
             let roomId = $(this).data('id');
             socket.emit("join-a-room", roomId, userNameGlobal, function (data) {
                 roomIdGlobal = roomId;
-                console.log(roomIdGlobal);
                 $('.container').show();
             });
         })
@@ -77,17 +76,23 @@ $(document).ready(function () {
 
 
 (function () {
-    socket.on("rooms", data => {
+        // socket.on('ping', msg => {
+        //     alert(msg);
+        // });
+        socket.on("rooms", data => {
         let roomList = ``;
         Object.keys(data).forEach(function (item) {
             roomList += `<div class="room-name" data-id="${item}">${item} -  So nguoi: ${data[item].length}</div>`; // key
-            console.log(data[item]); // value
         });
         $('.room-list').html(roomList)
-    });
+
+        });
+
+        socket.on("the-game-is-playing", () =>{
+            alertify.notify('Bàn này đang chơi rồi, đợi hoặc chọn bàn khác nhé bạn iu!', 'error', 4, function(){});
+        });
+
         socket.on("start-btn-bind", data => {
-            console.log(data);
-            console.log('BINDED');
             if(data.status === 'success'){
                 $('.start-game').removeClass('hidden');
             }
@@ -143,6 +148,7 @@ $(document).ready(function () {
                         </div>`;
                 });
                 $('.cards').html(cardHtml);
+                $('.played-area-container').html('');
                 $('#sortCards').removeClass('hidden');
                 $('.start-game').addClass('hidden');
             }
@@ -223,9 +229,14 @@ $(document).ready(function () {
 
         socket.on('game-end', data => {
             $('.cards').html('');
-            $('.played-area-container').html('');
             $('.action-container').addClass('hidden');
-            $('.single-player').removeClass('opacity-03');
+            let singlePlayer =$('.single-player');
+            singlePlayer.removeClass('opacity-03');
+            if(data.length > 0){
+                let order = data[0].order;
+                singlePlayer.removeClass('turn-active');
+                $('.order-'+ order).addClass('turn-active');
+            }
         });
 
         socket.on('kill-two', data => {
@@ -251,6 +262,7 @@ $(document).ready(function () {
         socket.on("the-game-is-busy", data => {
             alert('Đợi đi, mọi người đang trong game rồi.');
         });
+
 
 })();
 

@@ -9,58 +9,74 @@ class SocketHandler {
 
     _bindSocketEvent() {
         let self = this;
+
         this.socketMain.on("connection", function (socket) {
-            console.log('connected');
             socket.on('has-just-come', function() {
-                socket.emit('rooms', socket.adapter.rooms);
+                socket.emit('rooms', self.filterDefaultRoom(self.roomList));
             });
 
-            socket.on('room-created', (userNameGlobal, roomId, callback) => {
-                socket.join(roomId);
-                self.socketMain.emit('rooms', socket.adapter.rooms);
-                callback(roomId);
-                self.roomList[roomId] = new room(self.socketMain, roomId);
-                self.roomList[roomId].handleReadyRequest(userNameGlobal, socket.id)
+            socket.on('room-created', (userNameGlobal, callback) => {
+                if(Object.keys(socket.rooms).length === 1) {
+                    let roomId = 'roomID::' + Math.random().toString(36).substring(2);
+                    socket.join(roomId);
+                    callback(roomId);
+
+                    self.roomList[roomId] = new room(self.socketMain, roomId);
+                    self.roomList[roomId].handleReadyRequest(userNameGlobal, socket.id);
+
+                    self.socketMain.emit('rooms', self.filterDefaultRoom(self.roomList));
+                }
             });
-            //
+
+            socket.on('disconnecting', function(){
+                var rooms = socket.rooms;
+                var socketInRoom = self.getCurrentRoomId(rooms);
+                if(socketInRoom && self.checkingRoomExisting(socketInRoom)){
+                        let oldPlayersCount = self.roomList[socketInRoom].players.length;
+                        self.roomList[socketInRoom].players = self.roomList[socketInRoom].players.filter(e => {
+                            return e.userId !== socket.id;
+                        });
+                        let newPlayerCount = self.roomList[socketInRoom].players.length;
+
+                        if(newPlayerCount < oldPlayersCount){
+                            self.roomList[socketInRoom].game.lastWinner = null;
+                        }
+
+                        self.roomList[socketInRoom].emitRoomMembers();
+
+                        if (self.roomList[socketInRoom].players.length > 0) {
+                            self.roomList[socketInRoom].players[0].isHosted = 1;
+                            if(self.roomList[socketInRoom].game.state === 0){
+                                self.roomList[socketInRoom].emitStartBtn(self.roomList[socketInRoom].players[0].userId);
+                            }
+
+                        } else {
+                            delete self.roomList[socketInRoom];
+                        }
+                    }
+
+            });
 
             socket.on('join-a-room', (roomId, userNameGlobal, callback)=> {
                 if(typeof socket.adapter.rooms[roomId] !== "undefined" && typeof self.roomList[roomId] !== "undefined" && socket.adapter.rooms[roomId].length < 4){
-                    socket.join(roomId);
-                    callback('this message from server');
-                    self.socketMain.emit('rooms', socket.adapter.rooms);
-                    self.roomList[roomId].handleReadyRequest(userNameGlobal, socket.id)
-                }
+                    if(Object.keys(socket.rooms).length === 1){
+                        if(self.roomList[roomId].game.state === 0){
+                            socket.join(roomId);
+                            callback('This message from server');
+                            self.roomList[roomId].handleReadyRequest(userNameGlobal, socket.id);
 
+                            self.socketMain.emit('rooms', self.filterDefaultRoom(self.roomList));
+                        }
+                        else{
+                            self.socketMain.to(`${socket.id}`).emit("the-game-is-playing");
+                        }
+                    }
+                }
 
             });
 
-
             socket.on('disconnect', () => {
-                self.socketMain.emit('rooms', socket.adapter.rooms);
-                //
-                // console.log('dis');
-                //
-                // let oldPlayersCount = self.players.length;
-                // self.players = self.players.filter(e => {
-                //     return e.userId !== socket.id;
-                // });
-                // let newPlayerCount = self.players.length;
-                //
-                // if(newPlayerCount < oldPlayersCount){
-                //     self.game.lastWinner = null;
-                // }
-                //
-                // if (self.players.length > 0) {
-                //     self.players[0].isHosted = 1;
-                //     if(self.game.state === 0){
-                //         self.emitStartBtn(self.players[0].userId);
-                //     }
-                // } else {
-                //     self.game.playersWin = [];
-                //     self.restart();
-                // }
-                // self.emitRoomMembers();
+                self.socketMain.emit('rooms', self.filterDefaultRoom(self.roomList));
                 socket.disconnect();
             });
             socket.on("start-game", (roomId) => {
@@ -72,7 +88,6 @@ class SocketHandler {
                         }
                     }
                 }
-
 
             });
 
@@ -128,6 +143,17 @@ class SocketHandler {
 
     checkingRoomExisting(roomId){
         return typeof this.roomList[roomId] !== "undefined";
+    }
+
+    filterDefaultRoom(allRooms) {
+        return Object.keys(allRooms).filter(key => key.indexOf('roomID::') !== -1)
+            .reduce((obj, key) => { obj[key] = {length: allRooms[key].players.length}; return obj; }, {});
+    }
+
+    getCurrentRoomId(playerRooms) {
+        let currentRoomObject = Object.keys(playerRooms).filter(key => key.indexOf('roomID::') !== -1);
+        if(currentRoomObject.length > 0) return currentRoomObject[0];
+        return false;
     }
 
 }
