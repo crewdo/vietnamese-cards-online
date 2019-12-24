@@ -86,6 +86,9 @@ class SocketHandler {
                         if(host.isHosted && self.roomList[roomId].players.length >= 2 ){
                             self.roomList[roomId].startGame();
                         }
+                        else{
+                            self.socketMain.to(`${socket.id}`).emit("not-enough-player");
+                        }
                     }
                 }
 

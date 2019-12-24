@@ -4,32 +4,35 @@
         <meta name="viewport"
               content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Playing Cards Online Game</title>
+        <title>Tiến Lên Miền Nam</title>
         <link rel="stylesheet" href="./css/style.css?ver=1.2">
         <link rel="stylesheet" href="./css/lib/alertify.min.css">
         <link rel="icon" href="./image/favicon.png" sizes="16x16 32x32" type="image/png">
 
     </head>
     <body>
-    <button id="createRoom">Create Room</button>
-
-    <div class="room-list" style="">
-
+    <!----------------- ROOM AREA---------------------->
+    <div class="room-area display-none">
+        <button id="createRoom">Tạo Phòng</button>
+        <div class="room-list">
+        </div>
     </div>
-    <div class="ready-container">
+
+
+    <!----------------- READY AREA---------------------->
+    <div class="ready-container hidden">
         <input name="username" id="username" maxlength="20" placeholder="Nhập tên">
-        <button id="ready" class="ready">Vào game</button>
+        <button id="ready" class="ready">Bơi vào!</button>
     </div>
-    <div class="container" style="display: none">
+
+
+    <!----------------- INGAME AREA---------------------->
+    <div class="container display-none">
         <div class="table-container">
-            <div class="played-area-container">
-
-            </div>
-
+            <div class="played-area-container"></div>
             <div class="start-game hidden">
                 <button id="gogo" class="ready start">Bắt đầu</button>
             </div>
-
             <div class="players-wrapper">
                 <div class="single-player top">
                 </div>
@@ -49,7 +52,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="arrange-container">
                     <button class="arrange hidden" id="sortCards">Xếp</button>
                 </div>
@@ -57,6 +59,9 @@
         </div>
     </div>
 
+
+
+    <!----------------- CORE HANDLE AREA---------------------->
     <script  src="./js/lib/socket-io.js"></script>
     <script  src="./js/lib/jquery-3.4.1.js"></script>
     <script  src="./js/lib/alertify.min.js"></script>

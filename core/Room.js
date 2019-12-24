@@ -208,6 +208,8 @@ class Room{
                 self.socketMain.to(`${e.userId}`).emit("card-result", {info: e});
             });
 
+
+
             this.game.state = 1;
             this.checkAndInitFirstRound();
         }

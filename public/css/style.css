@@ -5,14 +5,16 @@ html, body{
     padding: 0;
     font-family: OpenSans;
 }
+body{
+    background-image: url("/image/background.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
 .container{
     max-width: 100%;
     height: 100vh;
 }
 .table-container{
-    background-image: url("/image/background.jpg");
-    background-size: cover;
-    background-repeat: no-repeat;
     width: 100%;
     height: 100%;
 }
@@ -230,10 +232,15 @@ html, body{
 
 .start-game{
     position: absolute;
-    top: 20px;
-    left: 20px;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
     cursor: pointer;
     z-index: 10;
+    width: 100px;
+    height: 100px;
 }
 
 .hidden{
@@ -290,4 +297,8 @@ html, body{
 .ajs-message{
     color: white;
     font-size: 14px;
+}
+
+.display-none{
+    display: none !important;
 }

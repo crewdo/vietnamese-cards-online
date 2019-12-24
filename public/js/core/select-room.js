@@ -4,22 +4,27 @@ var roomIdGlobal = null;
 
 $(document).ready(function () {
     socket.emit('has-just-come');
-    let lastUsername = localStorage.getItem('username');
-    if (lastUsername !== null) {
-        $('#username').val(lastUsername);
+
+    let lastUsername = localStorage.getItem('client_name');
+    if (lastUsername == null || lastUsername === "") {
+        $('#username').parent().removeClass('hidden');
+    }
+    else{
+        $('.room-area').removeClass('display-none');
+        $('#username').val(lastUsername); //For change Username in the future
     }
     $('#ready').click(function () {
         let userName = $('#username').val();
         if (userName !== "") {
-            $(this).parent().remove();
-            localStorage.setItem('username', userName);
+            $('#username').parent().addClass('hidden');
+            localStorage.setItem('client_name', userName);
             userNameGlobal = userName;
-            $('.room-list').show();
+            $('.room-area').removeClass('display-none');
+
         } else {
             alertify.notify('Nhập tên trước đã!', 'error', 4, function () {
             });
         }
-
     });
 
     $('#username').keypress(function (e) {
@@ -36,7 +41,7 @@ $(document).ready(function () {
         .on('click', '#createRoom', function () {
             socket.emit("room-created", userNameGlobal, function (roomId) {
                 roomIdGlobal = roomId;
-                $('.container').show();
+                $('.container').removeClass('display-none');
 
             });
         })
@@ -44,7 +49,7 @@ $(document).ready(function () {
             let roomId = $(this).data('id');
             socket.emit("join-a-room", roomId, userNameGlobal, function (data) {
                 roomIdGlobal = roomId;
-                $('.container').show();
+                $('.container').removeClass('display-none');
             });
         })
         .on('click', '#gogo', function () {
@@ -85,11 +90,13 @@ $(document).ready(function () {
             roomList += `<div class="room-name" data-id="${item}">${item} -  So nguoi: ${data[item].length}</div>`; // key
         });
         $('.room-list').html(roomList)
-
         });
 
         socket.on("the-game-is-playing", () =>{
             alertify.notify('Bàn này đang chơi rồi, đợi hoặc chọn bàn khác nhé bạn iu!', 'error', 4, function(){});
+        });
+        socket.on("not-enough-player", () =>{
+            alertify.notify('Chưa đủ người, tính đánh một mình hả?', 'error', 4, function(){});
         });
 
         socket.on("start-btn-bind", data => {
@@ -151,6 +158,9 @@ $(document).ready(function () {
                 $('.played-area-container').html('');
                 $('#sortCards').removeClass('hidden');
                 $('.start-game').addClass('hidden');
+
+                let singlePlayer =$('.single-player');
+                singlePlayer.removeClass('turn-active');
             }
         });
 
@@ -232,11 +242,7 @@ $(document).ready(function () {
             $('.action-container').addClass('hidden');
             let singlePlayer =$('.single-player');
             singlePlayer.removeClass('opacity-03');
-            if(data.length > 0){
-                let order = data[0].order;
-                singlePlayer.removeClass('turn-active');
-                $('.order-'+ order).addClass('turn-active');
-            }
+
         });
 
         socket.on('kill-two', data => {
