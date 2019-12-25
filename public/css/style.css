@@ -224,7 +224,6 @@ body{
 }
 
 .ready.start{
-    left: 35px;
     position: relative;
     margin: unset;
     background: #00b7ff;
@@ -239,8 +238,9 @@ body{
     margin: auto;
     cursor: pointer;
     z-index: 10;
-    width: 100px;
+    width: 130px;
     height: 100px;
+
 }
 
 .hidden{
@@ -301,4 +301,56 @@ body{
 
 .display-none{
     display: none !important;
+}
+
+.room-area{
+    width: 50%;
+    height: 70vh;
+    text-align: center;
+    padding: 10px;
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    overflow: auto;
+    border: 4px solid #00ff77;
+    border-radius: 10px;
+}
+
+.room-area button{
+    left: 46%;
+    top: 42px;
+    height: 70px;
+    width: 130px;
+    background: #16e40d;
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+    border-radius: 40px;
+    border: 5px solid;
+    outline: none;
+    cursor: pointer;
+    margin: unset;
+    position: fixed;
+}
+
+.room-name{
+    padding: 10px;
+    background: #5eff2f7d;
+    color: white;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    position: relative;
+
+}
+.count-player{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 22px;
+
 }

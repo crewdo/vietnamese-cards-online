@@ -1,6 +1,17 @@
 var socket = io();
 var userNameGlobal = null;
 var roomIdGlobal = null;
+var roomNameRandom = [
+    'Haha!',
+    'Tiến lên nào!',
+    'Đừng để thúi heo',
+    'Sảnh rồng ăn hết',
+    'Bối đôi thông',
+    'Vui là chính',
+    'Dân chuyên nghiệp',
+    'Nhiều tiền thì vào'
+
+];
 
 $(document).ready(function () {
     socket.emit('has-just-come');
@@ -34,7 +45,7 @@ $(document).ready(function () {
     });
 
     window.onbeforeunload = function () {
-        // return "";
+        return "";
     };
 
     $(document)
@@ -42,6 +53,7 @@ $(document).ready(function () {
             socket.emit("room-created", userNameGlobal, function (roomId) {
                 roomIdGlobal = roomId;
                 $('.container').removeClass('display-none');
+                $('.room-area').addClass('display-none');
 
             });
         })
@@ -50,6 +62,8 @@ $(document).ready(function () {
             socket.emit("join-a-room", roomId, userNameGlobal, function (data) {
                 roomIdGlobal = roomId;
                 $('.container').removeClass('display-none');
+                $('.room-area').addClass('display-none');
+
             });
         })
         .on('click', '#gogo', function () {
@@ -87,7 +101,12 @@ $(document).ready(function () {
         socket.on("rooms", data => {
         let roomList = ``;
         Object.keys(data).forEach(function (item) {
-            roomList += `<div class="room-name" data-id="${item}">${item} -  So nguoi: ${data[item].length}</div>`; // key
+            let ramdomNum = Math.floor(Math.random() * 6) + 1;
+            roomList += `<div class="room-name" data-id="${item}">
+        <p>${roomNameRandom[ramdomNum]}</p>
+        <div class="count-player">${data[item].length} người</div>
+        
+    </div>`; // key
         });
         $('.room-list').html(roomList)
         });
