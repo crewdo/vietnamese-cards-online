@@ -366,4 +366,5 @@ body{
     cursor: pointer;
     outline: none;
     border: 1px solid white;
+    z-index: 100;
 }
