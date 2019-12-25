@@ -354,3 +354,16 @@ body{
     font-size: 22px;
 
 }
+
+#out{
+    padding: 5px;
+    border-radius: 18px;
+    color: white;
+    background: #00000082;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    cursor: pointer;
+    outline: none;
+    border: 1px solid white;
+}

@@ -70,6 +70,9 @@ $(document).ready(function () {
             socket.emit("start-game", roomIdGlobal);
 
         })
+        .on('click', '#out', function () {
+            location.reload();
+        })
         .on('click', '#sortCards', function () {
             socket.emit('sort-cards', roomIdGlobal);
         })
