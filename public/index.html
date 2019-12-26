@@ -7,13 +7,14 @@
         <title>Tiến Lên Miền Nam</title>
         <link rel="stylesheet" href="./css/style.css?ver=1.9">
         <link rel="stylesheet" href="./css/lib/alertify.min.css">
+        <link rel="stylesheet" href="./css/lib/fonts.css">
         <link rel="icon" href="./image/favicon.png" sizes="16x16 32x32" type="image/png">
 
     </head>
     <body>
     <!----------------- ROOM AREA---------------------->
     <div class="room-area display-none">
-        <button id="createRoom">Tạo Phòng</button>
+        <button id="createRoom"><i class="wb-plus"></i> Tạo Phòng</button>
         <div class="room-list">
         </div>
     </div>
@@ -22,7 +23,7 @@
     <!----------------- READY AREA---------------------->
     <div class="ready-container hidden">
         <input name="username" id="username" maxlength="20" placeholder="Nhập tên">
-        <button id="ready" class="ready">Bơi vào!</button>
+        <button id="ready" class="ready"><i class="wb-emoticon"></i> Bơi vào!</button>
     </div>
 
 
@@ -30,12 +31,12 @@
     <div class="container display-none">
         <div class="table-container">
             <div class="out">
-                <button id="out">Thoát game</button>
+                <button id="out"><i class="wb-close"></i> Thoát game</button>
 
             </div>
             <div class="played-area-container"></div>
             <div class="start-game hidden">
-                <button id="gogo" class="ready start">Bắt đầu</button>
+                <button id="gogo" class="ready start"><i class="wb-unlock"></i> Bắt đầu</button>
             </div>
             <div class="players-wrapper">
                 <div class="single-player top">
@@ -48,8 +49,8 @@
                 </div>
                 <div class="self-container">
                     <div class="action-container hidden">
-                        <button class="pass" id="pass">Bỏ lượt</button>
-                        <button class="hit" id="playCards">Đánh</button>
+                        <button class="pass" id="pass"><i class="wb-close"></i> Bỏ lượt</button>
+                        <button class="hit" id="playCards"><i class="wb-check"></i> Đánh</button>
                     </div>
                     <div class="cards-handle-container">
                         <div class="cards">
@@ -57,7 +58,7 @@
                     </div>
                 </div>
                 <div class="arrange-container">
-                    <button class="arrange hidden" id="sortCards">Xếp</button>
+                    <button class="arrange hidden" id="sortCards"><i class="wb-loop"></i> Xếp</button>
                 </div>
             </div>
         </div>

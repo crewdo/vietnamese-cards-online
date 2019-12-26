@@ -16,6 +16,9 @@ var roomNameRandom = [
 $(document).ready(function () {
     socket.emit('has-just-come');
 
+
+    let chatContainer = $('.chat-container');
+
     let lastUsername = localStorage.getItem('client_name');
     if (lastUsername == null || lastUsername === "") {
         $('#username').parent().removeClass('hidden');
@@ -73,6 +76,11 @@ $(document).ready(function () {
         .on('click', '#out', function () {
             location.reload();
         })
+        .on('keypress',function(e) {
+        if(e.which === 13) {
+            chatContainer.find('input').focus();
+        }
+        })
         .on('click', '#sortCards', function () {
             socket.emit('sort-cards', roomIdGlobal);
         })
@@ -83,6 +91,7 @@ $(document).ready(function () {
         .on('click', '#pass', function () {
             socket.emit('pass', roomIdGlobal);
         })
+
         .on('click', '#playCards', function () {
             let cardsData = [];
             $('.picking').map(function(e) {

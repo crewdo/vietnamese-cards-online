@@ -286,7 +286,7 @@ body{
 }
 
 .last-combo-highlight{
-    background: #47ff0069;
+    background: #00e4ff;
     border-radius: 5px;
 }
 
@@ -316,8 +316,6 @@ body{
     right: 0;
     margin: auto;
     overflow: auto;
-    border: 4px solid #00ff77;
-    border-radius: 10px;
 }
 
 .room-area button{
@@ -338,8 +336,9 @@ body{
 }
 
 .room-name{
-    padding: 10px;
-    background: #5eff2f7d;
+    padding: 1px;
+    background-color: #1fc8db;
+    background-image: linear-gradient(141deg, #9fb8ad 0%, #1fc8db 51%, #2cb5e8 75%);
     color: white;
     border-radius: 8px;
     margin-bottom: 10px;
@@ -351,7 +350,6 @@ body{
     position: absolute;
     top: 20px;
     right: 20px;
-    font-size: 22px;
 
 }
 
@@ -365,6 +363,6 @@ body{
     left: 10px;
     cursor: pointer;
     outline: none;
-    border: 1px solid white;
+    border: none;
     z-index: 100;
 }
