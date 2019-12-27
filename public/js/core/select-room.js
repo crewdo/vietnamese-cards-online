@@ -1,5 +1,5 @@
 var socket = io();
-var userNameGlobal = null;
+var userNameGlobal = localStorage.getItem('client_name') || null;
 var roomIdGlobal = null;
 var roomNameRandom = [
     'Haha!',
