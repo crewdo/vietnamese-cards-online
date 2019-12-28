@@ -9,11 +9,11 @@ html, body{
     font-family: OpenSans;
 }
 body{
-    /*background-image: url("/image/background.jpg");*/
+    background-image: url("/image/background.jpg");
     perspective: 500px;
     height: 100vh;
     overflow: hidden;
-    background: radial-gradient(rgba(255, 127, 80, 0.3), #1b0032);
+    /*background: radial-gradient(rgba(255, 127, 80, 0.3), #1b0032);*/
     background-size: cover;
     background-repeat: no-repeat;
 }
@@ -374,35 +374,35 @@ body{
     z-index: 100;
 }
 
-.vfx{
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    pointer-events: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+/*.vfx{*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*    right: 0;*/
+/*    bottom: 0;*/
+/*    left: 0;*/
+/*    pointer-events: none;*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*}*/
 
-.smoke:nth-child(1) {
-    opacity: 0.4;
-    width: 75%;
-    height: auto;
-    animation: spin 60s infinite linear;
-}
-.smoke:nth-child(2) {
-    opacity: 0.25;
-    width: 100%;
-    height: auto;
-    animation: spin 120s infinite linear;
-    animation-delay: -45s;
-    animation-direction: reverse;
-}
-.smoke {
-    position: absolute;
-}
+/*.smoke:nth-child(1) {*/
+/*    opacity: 0.4;*/
+/*    width: 75%;*/
+/*    height: auto;*/
+/*    animation: spin 60s infinite linear;*/
+/*}*/
+/*.smoke:nth-child(2) {*/
+/*    opacity: 0.25;*/
+/*    width: 100%;*/
+/*    height: auto;*/
+/*    animation: spin 120s infinite linear;*/
+/*    animation-delay: -45s;*/
+/*    animation-direction: reverse;*/
+/*}*/
+/*.smoke {*/
+/*    position: absolute;*/
+/*}*/
 
 @keyframes spin {
     0% {
