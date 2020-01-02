@@ -1,0 +1,44 @@
+.modal#modal-sign-in(tabindex='-1', role='dialog')
+  .modal-dialog(role='document')
+    .modal-content
+      .modal-header
+        //h5.modal-title Modal title
+        ul#accountTab.nav.nav-tabs(role='tablist')
+          li.nav-item
+            a#sign-in-tab.nav-link.active(data-toggle='tab', href='#sign-in', role='tab', aria-controls='sign in', aria-selected='true') Đăng nhập
+          li.nav-item
+            a#sign-up-tab.nav-link(data-toggle='tab', href='#sign-up', role='tab', aria-controls='sign up', aria-selected='false') Đăng ký
+        button.close(type='button', data-dismiss='modal', aria-label='Close')
+          span(aria-hidden='true') ×
+
+
+      .modal-body
+        #accountTabContent.tab-content
+          #sign-in.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='sign-in-tab')
+            form#sign-in-form
+              .form-group
+                label.col-form-label(for='username') Tên đăng nhập:
+                input#username.form-control(type='text')
+              .form-group
+                label.col-form-label(for='password') Mật khẩu:
+                input#password.form-control(type='password')
+              .form-submit.center
+                button.btn.btn-outline-red.animate.tall.rec(type='submit')
+                  span Đăng nhập
+          #sign-up.tab-pane.fade(role='tabpanel', aria-labelledby='sign-up-tab')
+            form#sign-up-form
+              .form-group
+                label.col-form-label(for='username-up') Tên đăng nhập:
+                input#username-up.form-control(type='text', required)
+              .form-group
+                label.col-form-label(for='password-up') Mật khẩu:
+                input#password-up.form-control(type='password', required)
+              .form-group
+                label.col-form-label(for='password-up-re') Nhập lại mật khẩu:
+                input#password-up-re.form-control(type='password', required)
+              .form-submit.center
+                button.btn.btn-outline-red.animate.tall.rec(type='submit')
+                  span Đăng ký
+
+
+

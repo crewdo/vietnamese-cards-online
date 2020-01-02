@@ -1,0 +1,44 @@
+extends layout
+block header
+  block header
+
+block content
+    // --------------- ROOM AREA--------------------
+    .room-area
+      button#createRoom.btn.btn-large.btn-yellow
+        i.wb-plus
+        |  Tạo Phòng
+      .room-list
+    // --------------- INGAME AREA--------------------
+    .container.display-none
+      .table-container
+        .out
+          button#out
+            i.wb-close
+            |  Thoát game
+        .played-area-container
+        .start-game.hidden
+          button#gogo.ready.start.btn.btn-large.btn-outline-white
+            i.wb-unlock
+            |  Bắt đầu
+        .players-wrapper
+          .single-player.top
+          .single-player.left
+          .single-player.right
+          .single-player.bottom
+          .self-container
+            .action-container.hidden
+              button#pass.pass
+                i.wb-close
+                |  Bỏ lượt
+              button#playCards.hit
+                i.wb-check
+                |  Đánh
+            .cards-handle-container
+              .cards
+          .arrange-container
+            button#sortCards.arrange.hidden
+              i.wb-loop
+              |  Xếp
+block scripts
+    script(src='./js/core/select-room.js?ver=1.1')

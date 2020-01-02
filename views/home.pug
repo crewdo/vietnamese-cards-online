@@ -1,0 +1,55 @@
+extends layout
+block style
+  link(rel='stylesheet', href='./css/home.css')
+block header
+  div.header-style-1
+    div.container
+      div.header-main_menu
+        div#main-nav
+          nav.navbar.navbar-expand-lg.main-nav_list
+            div.header-main_logo
+              div.logo
+                a(href="#")
+                  img.img-responsive(src="./image/logo/logo_card.png", alt="logo")
+            button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarSupportedContent', aria-controls='navbarSupportedContent', aria-expanded='false', aria-label='Toggle navigation')
+              span.navbar-toggler-icon
+            #navbarSupportedContent.collapse.navbar-collapse
+              ul.navbar-nav.mr-auto
+                li.nav-item.main-nav_item.active
+                  a.nav-link(href='#')
+                    | Giới thiệu
+                    span.sr-only (current)
+                li.nav-item.main-nav_item
+                  a.nav-link(href='#') Link
+                li.nav-item.main-nav_item.right.account
+                  button.btn(data-modal='sign-in-tab') Đăng nhập
+                  | |
+                  button.btn(data-modal='sign-up-tab') Đăng ký
+                //li.nav-item.main-nav_item.right.hidden
+                //  a#username_data.nav-link(href='#') Xin chao !
+              form#user-name-form.form-inline.my-2.my-lg-0
+                input#username.form-control.mr-sm-2(type='text', placeholder='Nhập tên', aria-label='Nhập tên', name="username", maxlength='20')
+                button.btn.btn-regular.btn-outline-yellow.my-2.my-sm-0#ready(type='button')
+                  i.wb-emoticon
+                  | Lưu
+
+block content
+  div.container
+    div.game-select
+      div.game-nav.row
+        div.col-sm
+          a.game-item(href='/tien-len')
+            img.img-responsive(src='./image/bg/tienlen.png', alt='Tiến Lên')
+        div.col-sm
+          a.game-item(href='/tien-len')
+            img.img-responsive(src='./image/bg/phom1.png', alt='Phỏm - Tá lả')
+
+        div.col-sm
+          a.game-item(href='/tien-len')
+            img.img-responsive(src='./image/bg/cotuong1.png', alt='Cờ tướng')
+
+        div.col-sm
+          a.game-item(href='/tien-len')
+            img.img-responsive(src='./image/bg/cangua-1.png', alt='cá ngựa')
+block scripts
+  script(src='./js/core/home.js')
