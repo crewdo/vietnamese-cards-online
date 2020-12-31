@@ -16,7 +16,6 @@ var roomNameRandom = [
 $(document).ready(function () {
     socket.emit('has-just-come');
 
-
     let chatContainer = $('.chat-container');
 
     let lastUsername = localStorage.getItem('client_name');
@@ -107,9 +106,7 @@ $(document).ready(function () {
 
 
 (function () {
-        // socket.on('ping', msg => {
-        //     alert(msg);
-        // });
+
         socket.on("rooms", data => {
         let roomList = ``;
         Object.keys(data).forEach(function (item) {
@@ -127,7 +124,7 @@ $(document).ready(function () {
             alertify.notify('Bàn này đang chơi rồi, đợi hoặc chọn bàn khác nhé bạn iu!', 'error', 4, function(){});
         });
         socket.on("not-enough-player", () =>{
-            alertify.notify('Chưa đủ người, tính đánh một mình hả?', 'error', 4, function(){});
+            alertify.notify('Chưa đủ người chơi', 'error', 4, function(){});
         });
 
         socket.on("start-btn-bind", data => {
@@ -281,15 +278,15 @@ $(document).ready(function () {
         });
 
         socket.on('not-your-turn', data => {
-            alertify.notify('Chưa đến lượt, bình tĩnh...', 'error', 4, function(){});
+            alertify.notify('Bạn chưa đến lượt', 'error', 4, function(){});
         });
 
         socket.on("your-turn-can-not-pass", data => {
-            alertify.notify('Đang cầm vòng, sao bỏ được?', 'error', 4, function(){});
+            alertify.notify('Bạn đang cầm vòng, không thể bỏ lượt', 'error', 4, function(){});
         });
 
         socket.on("you-need-to-play-smallest-card", data => {
-            alertify.notify('Ván đầu, đánh con nhỏ nhất giùm', 'error', 4, function(){});
+            alertify.notify('Ván đầu tiên, hãy đánh con nhỏ nhất', 'error', 4, function(){});
         });
 
         socket.on("invalid-combo", data => {
@@ -297,7 +294,7 @@ $(document).ready(function () {
         });
 
         socket.on("the-game-is-busy", data => {
-            alert('Đợi đi, mọi người đang trong game rồi.');
+            alert('Xin vui lòng đợi, mọi người sắp xong ván rồi.');
         });
 
 
