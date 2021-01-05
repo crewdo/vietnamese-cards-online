@@ -1,1 +1,1 @@
-Just npm install & nodemon app :)
+Tien len mien nam!
