@@ -47,16 +47,15 @@ class ComboChecker {
             if (lastComboType) {
                 return this.compare(comboType, cardsData, cardsDataBinding, lastComboType, lastCombo, lastComboDataBinding);
             }
-
         }
         return false;
-
     }
 
      compare(comboType, cardsData, cardsDataBinding, lastComboType, lastCombo, lastComboDataBinding) {
          if((!this.twoChecking(lastCombo) && this.twoChecking(cardsData))
              && comboType === lastComboType && cardsDataBinding.length === lastComboDataBinding.length)
              return true;
+
 
         if((this.twoChecking(cardsData) === this.twoChecking(lastCombo))
             && comboType === lastComboType && cardsDataBinding.length === lastComboDataBinding.length
